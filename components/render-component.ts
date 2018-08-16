@@ -64,6 +64,16 @@ export class RenderComponenet extends RendererComponent {
                         this.updateComment(reflection, attributeData);
                     }
                 break;
+            case ReflectionKind.GetSignature:
+            case ReflectionKind.SetSignature:
+                    const accessorParent = UtilsFunc.getParentBasedOnType(reflection, reflection.kind);
+                    const accessor = reflection.parent;
+                    const accessorSignature = reflection.kind;
+                    const data = this.getAccessorAttributeData(accessorParent.name, JSONObjectKind[accessor.kind], accessor.name, JSONObjectKind[accessorSignature]);
+                    if (data) {
+                        this.updateComment(reflection, data);
+                    }
+                break;
             default:
                 return;
         }
@@ -73,14 +83,19 @@ export class RenderComponenet extends RendererComponent {
         if (this.data && this.data[parentName]) {
             return this.data[parentName][attribute];
         }
-
-        return null;
     }
 
     private getAttributeData(parentName, attribute, attributeName) {
-        const attrData = this.getAttribute(parentName, attribute);
-        if (attrData) {
-            return this.data[parentName][attribute][attributeName];
+        const data = this.getAttribute(parentName, attribute);
+        if (data) {
+            return data[attributeName];
+        }
+    }
+
+    private getAccessorAttributeData(parentName, attribute, attributeName, accessorType) {
+        const data = this.getAttributeData(parentName, attribute, attributeName);
+        if (data) {
+            return data[accessorType];
         }
     }
 
