@@ -9,7 +9,6 @@ import { Options } from 'typedoc/dist/lib/utils/options';
 import { DiscoverEvent } from 'typedoc/dist/lib/utils/options/options';
 import { FileOperations } from '../utils/file-operations';
 import { JSONObjectKind } from '../utils/enums/json-obj-kind';
-import { UtilsFunc } from '../utils/helper-utils';
 
 const MAIN_DIR = 'exports';
 
@@ -21,7 +20,6 @@ export class RenderComponenet extends RendererComponent {
     public initialize() {
         this.listenTo(this.owner, {
             [RendererEvent.BEGIN]: this.onRenderBegin,
-            [RendererEvent.END]: this.onRenderEnd,
         });
         
         this.fileOperations = new FileOperations(this.application.logger);
@@ -56,7 +54,7 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
-                    const parent = UtilsFunc.getParentBasedOnType(reflection, reflection.kind);
+                    const parent = this.getParentBasedOnType(reflection, reflection.kind);
                     const parentName = parent.name;
                     const attributeName = reflection.name;
                     const attributeData = this.getAttributeData(parentName, JSONObjectKind[reflection.kind], attributeName);
@@ -66,7 +64,7 @@ export class RenderComponenet extends RendererComponent {
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
-                    const accessorParent = UtilsFunc.getParentBasedOnType(reflection, reflection.kind);
+                    const accessorParent = this.getParentBasedOnType(reflection, reflection.kind);
                     const accessor = reflection.parent;
                     const accessorSignature = reflection.kind;
                     const data = this.getAccessorAttributeData(accessorParent.name, JSONObjectKind[accessor.kind], accessor.name, JSONObjectKind[accessorSignature]);
@@ -113,8 +111,13 @@ export class RenderComponenet extends RendererComponent {
         }
     }
 
-    private onRenderEnd(event: RendererEvent) {
-        // console.log(event);
-    }
+    private getParentBasedOnType(reflection, kind) {
+        if (kind === ReflectionKind.CallSignature || 
+            kind === ReflectionKind.GetSignature || 
+            kind === ReflectionKind.SetSignature) {
+                return reflection.parent.parent;
+        }
 
+        return reflection.parent;
+    }
 }

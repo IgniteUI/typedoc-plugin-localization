@@ -21,7 +21,7 @@ export abstract class Factory {
 
     public abstract appendAttribute(kind, parentName, attributeName, data);
 
-    public abstract appendAccessorsAttribute(kind, parentName, accessorType, accessorName, data);
+    public abstract appendAccessorAttributes(parentName, kind, accessorName, accessorType, data);
 
     public abstract isEmpty();
 

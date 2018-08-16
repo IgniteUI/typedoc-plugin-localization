@@ -31,7 +31,7 @@ export class JsonObjectFactory extends Factory {
         this.fileClassContent[parentName][attributeKind][attributeName] = data;
     }
 
-    public appendAccessorsAttribute(kind, parentName, accessorType, accessorName, data) {
+    public appendAccessorAttributes(parentName, kind, accessorName, accessorType, data) {
         if(!data) {
             return;
         }

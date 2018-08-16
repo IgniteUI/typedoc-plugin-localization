@@ -87,32 +87,32 @@ export class ConvertComponent extends ConverterComponent {
                 this.jsonObjectName = reflection.name;
                 this.reflection = reflection;
                 this.factory = this.instanceBuilder(reflection.kind, this.jsonObjectName);
-                const data = this.getCommentText(reflection);
+                const data = this.getCommentData(reflection);
                 this.factory.buildObjectStructure(data);
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
-                const getData = this.getCommentText(reflection);
+                const getData = this.getCommentData(reflection);
                 this.factory.appendAttribute(reflection.kind, this.jsonObjectName, reflection.name, getData);
                    
                 break;
             case ReflectionKind.Function:
-                    const funcData = this.getCommentText(reflection.signatures[0]);
+                    const funcData = this.getCommentData(reflection.signatures[0]);
                     this.factory.appendAttribute(reflection.kind, this.jsonObjectName, reflection.name, funcData);
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
                 const accessorName = reflection.parent.name;
                 const accessorType = reflection.kind;
-                const accessorData = this.getCommentText(reflection);
-                this.factory.appendAccessorsAttribute(reflection.parent.kind, this.jsonObjectName, accessorType, accessorName, accessorData);
+                const accessorData = this.getCommentData(reflection);
+                this.factory.appendAccessorAttributes(this.jsonObjectName, reflection.parent.kind, accessorName, accessorType, accessorData);
             default:
                 return;
         }
     }
 
-    private getCommentText(obj) {
+    private getCommentData(obj) {
         if (!obj.comment) {
             return;
         }
