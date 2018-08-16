@@ -1,1 +1,1 @@
-# typedoc-localization-plugin
+# typedoc-plugin
