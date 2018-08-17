@@ -69,25 +69,25 @@ export class FileOperations {
         }
     }
 
-    public prepareOutputDirectory(fileObjects, mainExportDir) {
+    public prepareOutputDirectory(mainDir, fileObjects) {
         fileObjects.forEach(element => {
-            const parsedPath = path.parse(element.fileName);
-            const dirToExport = this.getProcessedDir(parsedPath);
-            if (dirToExport === null || parsedPath.root !== "") {
+            const dirToExport = this.getProcessedDir(element.fileName);
+            if (!dirToExport) {
                 return;
             }
-            if(!this.ifDirectoryExists(`${mainExportDir}\\${dirToExport}`)) {
-                this.createDir(`${mainExportDir}\\${dirToExport}`);
+            if(!this.ifDirectoryExists(`${mainDir}\\${dirToExport}`)) {
+                this.createDir(`${mainDir}\\${dirToExport}`);
             }
         });
     }
 
-    public getProcessedDir(parsedPath) {
+    public getProcessedDir(filePath) {
+        const parsedPath = path.parse(filePath);
         const splitPath = parsedPath.dir.split('/');
         const fileStructureDir = splitPath[0];
         const componentDir = splitPath[1];
-        if (fileStructureDir === "" && componentDir === undefined) {
-            return "";
+        if (fileStructureDir === "" && componentDir === undefined || parsedPath.root) {
+            return null;
         } else if (fileStructureDir && componentDir === undefined) {
             return fileStructureDir;
         }
@@ -95,10 +95,14 @@ export class FileOperations {
         return `${fileStructureDir}\\${componentDir}`;
     }
 
-    public createFileJSON(reflection, factoryObject, mainDir) {
-        const filePath = path.parse(reflection.sources[0].fileName);
-        const splitPath = this.getProcessedDir(filePath);
-        const currentFileFd = this.openFileSync(`${mainDir}\\${splitPath}`, `${factoryObject.name}.json`);
+    public createFileJSON(mainDir, filePath, factoryObject) {
+        const processedPath = this.getProcessedDir(filePath);
+        let path = mainDir;
+        if (processedPath) {
+            path = `${path}\\${processedPath}`;
+        }
+
+        const currentFileFd = this.openFileSync(path, `${factoryObject.name}.json`);
         fs.writeSync(currentFileFd, JSON.stringify(factoryObject.getFileClassContent(), null, 4));
         this.closeFileSync(currentFileFd);
     }

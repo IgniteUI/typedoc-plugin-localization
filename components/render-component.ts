@@ -45,8 +45,11 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Enum:
             case ReflectionKind.Interface:
                 const filePath = reflection.sources[0].fileName;
-                const parsePath = path.parse(filePath);
-                const processedDir = `${MAIN_DIR}\\${this.fileOperations.getProcessedDir(parsePath)}`;
+                let processedDir = MAIN_DIR;
+                const parsedPath = this.fileOperations.getProcessedDir(filePath);
+                if (parsedPath) {
+                    processedDir = `${processedDir}\\${parsedPath}`;
+                }
                 this.data = this.fileOperations.getFileJSONData(processedDir, reflection.name);
                 if (this.data) {
                     this.updateComment(reflection, this.data[reflection.name]);

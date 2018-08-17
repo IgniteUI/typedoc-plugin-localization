@@ -49,10 +49,6 @@ export class ConvertComponent extends ConverterComponent {
         if (options.generate) {
             process.exit(0);
         }
-
-        if (this.fileOperations.ifDirectoryExists(options.out) || this.fileOperations.ifFileExists(options.out)) {
-            this.fileOperations.removeDirectoryOrFile(options.out);
-        }
     }
 
     private onResolveBegin(context) {
@@ -62,13 +58,14 @@ export class ConvertComponent extends ConverterComponent {
         }
 
         const files = context.project.files;
-        this.fileOperations.prepareOutputDirectory(files, MAIN_DIR)
+        this.fileOperations.prepareOutputDirectory(MAIN_DIR, files)
     }
 
     private onResolveEnd(...rest) {
         // Add the last resolved object
-        if (this.factory && !this.factory.isEmpty()) {                    
-            this.fileOperations.createFileJSON(this.reflection, this.factory, MAIN_DIR);
+        if (this.factory && !this.factory.isEmpty()) {   
+            const filePath = this.reflection.sources[0].fileName;                 
+            this.fileOperations.createFileJSON(MAIN_DIR, filePath, this.factory);
         }
     }
 
@@ -84,7 +81,8 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.Interface:                
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factory.isEmpty()) {
-                        this.fileOperations.createFileJSON(this.reflection, this.factory, MAIN_DIR);                    
+                        const filePath = this.reflection.sources[0].fileName
+                        this.fileOperations.createFileJSON(MAIN_DIR, filePath, this.factory);                    
                     }
                 }
 
