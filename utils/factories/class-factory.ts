@@ -1,11 +1,11 @@
 import { Logger } from 'typedoc/dist/lib/utils/loggers';
 import { Factory } from './factory';
-import { JSONObjectKind } from '../enums/json-obj-kind';
+import { AttributeType } from '../enums/json-obj-kind';
 
-const PROPERTIES_KEY = JSONObjectKind[JSONObjectKind.properties];
-const METHODS_KEY = JSONObjectKind[JSONObjectKind.methods];
-const ACCESSORS_KEY = JSONObjectKind[JSONObjectKind.accessors];
-const FUNCTIONS_KEY = JSONObjectKind[JSONObjectKind.functions]
+const PROPERTIES_KEY = AttributeType[AttributeType.properties];
+const METHODS_KEY = AttributeType[AttributeType.methods];
+const ACCESSORS_KEY = AttributeType[AttributeType.accessors];
+const FUNCTIONS_KEY = AttributeType[AttributeType.functions]
 
 export class JsonObjectFactory extends Factory {
 
@@ -27,7 +27,7 @@ export class JsonObjectFactory extends Factory {
             return;
         }
 
-        const attributeKind = JSONObjectKind[kind];
+        const attributeKind = AttributeType[kind];
         this.fileClassContent[parentName][attributeKind][attributeName] = data;
     }
 
@@ -36,8 +36,8 @@ export class JsonObjectFactory extends Factory {
             return;
         }
 
-        const attributeKind = JSONObjectKind[kind];
-        const accesorTypeAsString = JSONObjectKind[accessorType];
+        const attributeKind = AttributeType[kind];
+        const accesorTypeAsString = AttributeType[accessorType];
         const isAccessorExists = this.fileClassContent[parentName][attributeKind][accessorName];
         if (!isAccessorExists) {
             this.fileClassContent[parentName][attributeKind][accessorName] = {};

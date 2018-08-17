@@ -1,7 +1,7 @@
 import { Factory } from "./factory";
-import { JSONObjectKind } from "../enums/json-obj-kind";
+import { AttributeType } from "../enums/json-obj-kind";
 
-const ENUM_MEMBER_KEY = JSONObjectKind[JSONObjectKind.members];
+const ENUM_MEMBER_KEY = AttributeType[AttributeType.members];
 
 export class JsonObjectEnumFactory extends Factory {
     
@@ -20,7 +20,7 @@ export class JsonObjectEnumFactory extends Factory {
             return;
         }        
         
-        const attributeKind = JSONObjectKind[kind];
+        const attributeKind = AttributeType[kind];
         this.fileClassContent[parentName][attributeKind][attributeName] = data;
     }
     

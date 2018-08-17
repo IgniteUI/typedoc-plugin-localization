@@ -1,6 +1,6 @@
 import { ReflectionKind } from "typedoc/dist/lib/models";
 
-export enum JSONObjectKind {
+export enum AttributeType {
     properties = ReflectionKind.Property,
     methods = ReflectionKind.CallSignature,
     accessors = ReflectionKind.Accessor,

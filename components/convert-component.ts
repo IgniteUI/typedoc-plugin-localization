@@ -7,15 +7,18 @@ import { FileOperations } from '../utils/file-operations';
 import { JsonObjectFactory } from '../utils/factories/class-factory';
 import { Factory } from '../utils/factories/factory';
 import { JsonObjectEnumFactory } from '../utils/factories/enum-factory';
+import { Parser } from '../utils/parser';
+import { Constants } from '../utils/constants';
 
 const MAIN_DIR = 'exports'
 
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
-    jsonObjectName;
+    jsonObjectName: string;
     factory: Factory;
     fileOperations: FileOperations;
     reflection;
+    parser: Parser;
 
     public initialize() {
 
@@ -27,6 +30,7 @@ export class ConvertComponent extends ConverterComponent {
             [Converter.EVENT_BEGIN]: this.onBegin
         });
 
+        this.parser = new Parser();
         this.fileOperations = new FileOperations(this.application.logger);
         if(!this.fileOperations.ifDirectoryExists(MAIN_DIR)) {
             this.fileOperations.createDir(MAIN_DIR);
@@ -118,14 +122,17 @@ export class ConvertComponent extends ConverterComponent {
         }
 
         const comment = {};
-        comment['comment'] = {};
+        comment[Constants.COMMENT] = {};
         
+        let splittedObj;
         if(obj.comment.text) {
-            comment['comment']['text'] = obj.comment.text;
+            splittedObj = this.parser.splitByCharacter(obj.comment.text, '\n');
+            comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
         }
 
         if(obj.comment.shortText) {
-            comment['comment']['shortText'] = obj.comment.shortText;
+            splittedObj = this.parser.splitByCharacter(obj.comment.shortText, '\n');
+            comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
         }
         
         return comment;

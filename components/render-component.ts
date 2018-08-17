@@ -8,7 +8,8 @@ import { ReflectionKind } from 'typedoc/dist/lib/models';
 import { Options } from 'typedoc/dist/lib/utils/options';
 import { DiscoverEvent } from 'typedoc/dist/lib/utils/options/options';
 import { FileOperations } from '../utils/file-operations';
-import { JSONObjectKind } from '../utils/enums/json-obj-kind';
+import { AttributeType } from '../utils/enums/json-obj-kind';
+import { Constants } from '../utils/constants';
 
 const MAIN_DIR = 'exports';
 
@@ -57,7 +58,7 @@ export class RenderComponenet extends RendererComponent {
                     const parent = this.getParentBasedOnType(reflection, reflection.kind);
                     const parentName = parent.name;
                     const attributeName = reflection.name;
-                    const attributeData = this.getAttributeData(parentName, JSONObjectKind[reflection.kind], attributeName);
+                    const attributeData = this.getAttributeData(parentName, AttributeType[reflection.kind], attributeName);
                     if(attributeData) {
                         this.updateComment(reflection, attributeData);
                     }
@@ -67,7 +68,7 @@ export class RenderComponenet extends RendererComponent {
                     const accessorParent = this.getParentBasedOnType(reflection, reflection.kind);
                     const accessor = reflection.parent;
                     const accessorSignature = reflection.kind;
-                    const data = this.getAccessorAttributeData(accessorParent.name, JSONObjectKind[accessor.kind], accessor.name, JSONObjectKind[accessorSignature]);
+                    const data = this.getAccessorAttributeData(accessorParent.name, AttributeType[accessor.kind], accessor.name, AttributeType[accessorSignature]);
                     if (data) {
                         this.updateComment(reflection, data);
                     }
@@ -98,16 +99,18 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private updateComment(reflection, dataObj) {
-        if (!reflection.comment || !dataObj['comment']) {
+        if (!reflection.comment || !dataObj[Constants.COMMENT]) {
             return;
         }
 
         if(reflection.comment.text) {
-            reflection.comment.text = dataObj['comment'].text;
+            const parsed = dataObj[Constants.COMMENT][Constants.TEXT].join('\n');
+            reflection.comment.text = parsed;
         }
 
         if(reflection.comment.shortText) {
-            reflection.comment.shortText = dataObj['comment'].shortText;
+            const parsed = dataObj[Constants.COMMENT][Constants.SHORT_TEXT].join('\n');
+            reflection.comment.shortText = parsed;
         }
     }
 
