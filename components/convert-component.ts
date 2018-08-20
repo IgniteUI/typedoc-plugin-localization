@@ -10,8 +10,6 @@ import { JsonObjectEnumFactory } from '../utils/factories/enum-factory';
 import { Parser } from '../utils/parser';
 import { Constants } from '../utils/constants';
 
-const MAIN_DIR = 'exports'
-
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
     jsonObjectName: string;
@@ -19,6 +17,7 @@ export class ConvertComponent extends ConverterComponent {
     fileOperations: FileOperations;
     reflection;
     parser: Parser;
+    mainDir: string;
 
     public initialize() {
 
@@ -32,49 +31,35 @@ export class ConvertComponent extends ConverterComponent {
 
         this.parser = new Parser();
         this.fileOperations = new FileOperations(this.application.logger);
-        if(!this.fileOperations.ifDirectoryExists(MAIN_DIR)) {
-            this.fileOperations.createDir(MAIN_DIR);
-        }
     }
 
     private onBegin(...rest) {
         const options = this.application.options.getRawValues();
-        if (!options.generate) {
-            return;
+        this.mainDir = options[Constants.CONVERT_COMMAND];
+        
+        if(!this.fileOperations.ifDirectoryExists(this.mainDir)) {
+            this.fileOperations.createDir(this.mainDir);
         }
     }
 
     private onEnd(...rest) {
-        const options = this.application.options.getRawValues();
-        if (options.generate) {
-            process.exit(0);
-        }
+        process.exit(0);
     }
 
     private onResolveBegin(context) {
-        const options = this.application.options.getRawValues();
-        if(!options.generate) {
-            return;
-        }
-
         const files = context.project.files;
-        this.fileOperations.prepareOutputDirectory(MAIN_DIR, files)
+        this.fileOperations.prepareOutputDirectory(this.mainDir, files)
     }
 
     private onResolveEnd(...rest) {
         // Add the last resolved object
         if (this.factory && !this.factory.isEmpty()) {   
             const filePath = this.reflection.sources[0].fileName;                 
-            this.fileOperations.createFileJSON(MAIN_DIR, filePath, this.factory);
+            this.fileOperations.createFileJSON(this.mainDir, filePath, this.factory);
         }
     }
 
     private resolve(context, reflection) {
-        const options = this.application.options.getRawValues();
-        if(!options.generate) {
-            return;
-        }
-
         switch(reflection.kind) {
             case ReflectionKind.Enum:
             case ReflectionKind.Class:
@@ -82,7 +67,7 @@ export class ConvertComponent extends ConverterComponent {
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factory.isEmpty()) {
                         const filePath = this.reflection.sources[0].fileName
-                        this.fileOperations.createFileJSON(MAIN_DIR, filePath, this.factory);                    
+                        this.fileOperations.createFileJSON(this.mainDir, filePath, this.factory);                    
                     }
                 }
 

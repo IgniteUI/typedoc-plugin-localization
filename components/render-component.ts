@@ -11,12 +11,11 @@ import { FileOperations } from '../utils/file-operations';
 import { AttributeType } from '../utils/enums/json-obj-kind';
 import { Constants } from '../utils/constants';
 
-const MAIN_DIR = 'exports';
-
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
     fileOperations: FileOperations;
     data: JSON;
+    mainDir: string;
 
     public initialize() {
         this.listenTo(this.owner, {
@@ -28,7 +27,12 @@ export class RenderComponenet extends RendererComponent {
 
     private onRenderBegin(event: RendererEvent) {        
         const reflections = event.project.reflections;
-        this.runCommentReplacements(reflections);
+        const options = this.application.options.getRawValues();
+        const localizeOpt = options[Constants.RENDER_COMMAND];
+        if (localizeOpt) {
+            this.mainDir = localizeOpt;
+            this.runCommentReplacements(reflections);
+        }
     }
 
     private runCommentReplacements(reflections) {
@@ -45,7 +49,7 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Enum:
             case ReflectionKind.Interface:
                 const filePath = reflection.sources[0].fileName;
-                let processedDir = MAIN_DIR;
+                let processedDir = this.mainDir;
                 const parsedPath = this.fileOperations.getProcessedDir(filePath);
                 if (parsedPath) {
                     processedDir = `${processedDir}\\${parsedPath}`;
