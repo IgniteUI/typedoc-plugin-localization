@@ -99,7 +99,7 @@ What is the difference between `methods` and `functions` keys?
 <br />
 `Functions` key represents all global functions declared into the file.
 
-> [!NOTICE]
+> [!WARNING]
 > If a current file does not contain any comments that have to be exported from the TypeDoc, it won't exists into the section with json files.
 
 #### 3-step
