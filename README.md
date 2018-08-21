@@ -22,26 +22,26 @@ npm install typedoc-localization-plugin
 
 ### Using
 
-#### 1-step
-In order to generate the json representation of each module of your application you will have to execute to command below: 
+#### Step 1
+In order to generate the json representation of each module of your application you will have to execute the command below: 
 ```
 typedoc `<main-file-with-all-exports>` --generate-json `<directory-to-export-json's>`
 ```
 
-For example Ignite UI for Angular
+We can use [Ignite UI for Angular](https://github.com/IgniteUI/igniteui-angular) repository for Example:
 
 ```
 typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
 ```
 
-Will create `exports` folder.
+This command will create `exports` folder.
 <br />
 `projects\igniteui-angular\src\public_api.ts` This file contains the file structure of the project. It takes up to `two` levels.
 <br />
 For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/` which will contains all files that are under it or files that are deeply nested.
 
 
-#### 2-step
+#### Step 2
 
 After the export of the JSON files finished, you should modify the comments in the desired language.
 
@@ -101,7 +101,7 @@ What is the difference between `methods` and `functions` keys?
 
 > If a current file does not contain any comments that have to be exported from the TypeDoc, it won't exists into the section with json files.
 
-#### 3-step
+#### Step 3
 
 When you finish with the translations you have to generate the documentation with the transleted files `(json's)`.
 <br />
