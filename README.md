@@ -7,36 +7,43 @@ A plugin for [Typedoc](http://typedoc.org)
 When using [Typedoc](http://typedoc.org) for API docs generation you may want to generate documentation with different languages.
 
 By using this plugin you will be able to:
- -> Merge all code comments(classes, methods, properties, enumerations etc.) that needs localization in a couple of files.
+    <br />
+ -> Merge all code comments(classes, methods, properties, enumerations etc.) that needs localization in a couple of json files.
+    <br />
  -> Translate them.
+    <br />
  -> Use the updated files to build a documentation for an entire project in the desired language.
 
 ### Installing
 
 ```
-npm install --save typedoc-localization-plugin
+npm install typedoc-localization-plugin
 ```
 
 ### Using
 
 #### 1-step
+In order to generate the json representation of each module of your application you will have to execute to command below: 
 ```
-typedoc --generate `<directory-to-export-json's>` <from-where-to-export>
+typedoc `<main-file-with-all-exports>` --generate-json `<directory-to-export-json's>`
 ```
 
 For example Ignite UI for Angular
 
 ```
-typedoc projects\igniteui-angular\src\public_api.ts --generate exports
+typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
 ```
 
 Will create `exports` folder.
-`projects\igniteui-angular\src\public_api.ts` This file contain the file structure of the projects. It takes up to `two` levels.
+<br />
+`projects\igniteui-angular\src\public_api.ts` This file contains the file structure of the project. It takes up to `two` levels.
+<br />
+For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/` which will contains all files that are under it or files that are deeply nested.
 
 
 #### 2-step
 
-After JSON files are generated, you should modify the comments in the desired language.
+After the export of the JSON files finished, you should modify the comments in the desired language.
 
 ```JSON
 {
@@ -75,14 +82,35 @@ After JSON files are generated, you should modify the comments in the desired la
         ....
 ```
 
+The structure of every file has the following representation:
+```JSON
+{
+    "className": {
+        "properties": {},
+        "methods": {},
+        "accessors": {},
+        "functions": {}
+    }
+}
+```
+What is the difference between `methods` and `functions` keys? 
+<br />
+`Methods` key represents all methods releted to the class. 
+<br />
+`Functions` key represents all global functions declared into the file.
+
+> [!NOTICE]
+> If a current file does not contain any comments that have to be exported from the TypeDoc, it won't exists into the section with json files.
+
 #### 3-step
 
-Generate TypeDoc documentation with the modified files.
-
+When you finish with the translations you have to generate the documentation with the transleted files `(json's)`.
+<br />
+So the following command should be executed:
 ```
-typedoc --generate-from-json `<json's-directory>` --out <to-generate-documentation-directory>
+typedoc --generate-from-json `<json's-directory>` --out `<exported-doc-directory>`
 ```
 
-`<json's-directory>` will be `exports` folder.
-`<to-generate-documentation-directory>` will be `dist\docs`
-
+`<json's-directory>` could be `exports` folder.
+<br />
+`<exported-doc-directory>` could be `dist\docs`
