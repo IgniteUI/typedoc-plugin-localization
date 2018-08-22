@@ -23,7 +23,7 @@ npm install typedoc-localization-plugin
 ### Using
 
 #### 1-step
-In order to generate the json representation of each module of your application you will have to execute to command below: 
+In order to generate the json representation of each module of your application you will have to execute the command below: 
 ```
 typedoc `<main-file-with-all-exports>` --generate-json `<directory-to-export-json's>`
 ```
@@ -103,7 +103,7 @@ What is the difference between `methods` and `functions` keys?
 
 #### 3-step
 
-When you finish with the translations you have to generate the documentation with the transleted files `(json's)`.
+When you finish with the translations you will have to generate the documentation with the transleted files `(json's)`.
 <br />
 So the following command should be executed:
 ```
