@@ -24,6 +24,9 @@
   "dependencies": {
     "fs-extra": "^7.0.0"
   },
+  "peerDependencies": {
+    "typedoc": ">=0.9.0"
+  },
   "devDependencies": {
     "typedoc": "^0.11.1",
     "typescript": "^3.0.1"
