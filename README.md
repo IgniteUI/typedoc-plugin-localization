@@ -14,7 +14,7 @@ By using this plugin you will be able to:
 ### Installing
 
 ```
-npm install typedoc-localization-plugin
+npm install typedoc-plugin-localization
 ```
 
 ### Using
