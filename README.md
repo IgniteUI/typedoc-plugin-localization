@@ -7,12 +7,9 @@ A plugin for [Typedoc](http://typedoc.org)
 When using [Typedoc](http://typedoc.org) for API docs generation you may want to generate documentation with different languages.
 
 By using this plugin you will be able to:
-    <br />
- -> Merge all code comments(classes, methods, properties, enumerations etc.) that needs localization in a couple of json files.
-    <br />
- -> Translate them.
-    <br />
- -> Use the updated files to build a documentation for an entire project in the desired language.
+ 1. Merge all code comments(classes, methods, properties, enumerations etc.) that needs localization in a couple of json files.
+ 2. Translate them.
+ 3. Use the updated files to build a documentation for an entire project in the desired language.
 
 ### Installing
 
@@ -22,10 +19,23 @@ npm install typedoc-localization-plugin
 
 ### Using
 
+> Please take in mind that you are running your local npm packages by `npx` right before the command execution.
+<br />
+> The alternative would be to install the plugin globally with `-g` at the end of the command.
+<br />
+> Then you won't need to use `npx`.
+
+#### Path variable descriptions
+`<main-proj-file>` - This file has to contain the file structure of the project.
+    <br />
+`<json-exports-dir>` - This file would contains all generated json files with retrieved comments.
+    <br />
+`<out-typedoc-dir>` - The directory where the documentation have to be generated
+
 #### Step 1
 In order to generate the json representation of each module of your application you will have to execute the command below: 
 ```
-typedoc `<main-file-with-all-exports>` --generate-json `<directory-to-export-json's>`
+typedoc `<main-proj-file>` --generate-json `<json-export-dir>`
 ```
 
 We can use [Ignite UI for Angular](https://github.com/IgniteUI/igniteui-angular) repository for Example:
@@ -33,12 +43,11 @@ We can use [Ignite UI for Angular](https://github.com/IgniteUI/igniteui-angular)
 ```
 typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
 ```
-
-This command will create `exports` folder.
-<br />
-`projects\igniteui-angular\src\public_api.ts` This file contains the file structure of the project. It takes up to `two` levels.
-<br />
-For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/` which will contains all files that are under it or files that are deeply nested.
+> This command will create `exports` folder.
+> <br />
+>`projects\igniteui-angular\src\public_api.ts` This file contains the file structure of the project. It takes up to `two` levels.
+> <br />
+> For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/` which   > will contains all files that are under it or files that are deeply nested.
 
 
 #### Step 2
@@ -105,11 +114,7 @@ What is the difference between `methods` and `functions` keys?
 
 When you finish with the translations you will have to generate the documentation with the transleted files `(json's)`.
 <br />
-So the following command should be executed:
+So the following command have to be executed:
 ```
-typedoc --generate-from-json `<json's-directory>` --out `<exported-doc-directory>`
+typedoc `<main-proj-file>` --generate-from-json `<json-exports-dir>` --out `<out-typedoc-dir>`
 ```
-
-`<json's-directory>` could be `exports` folder.
-<br />
-`<exported-doc-directory>` could be `dist\docs`

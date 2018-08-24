@@ -30,6 +30,11 @@ module.exports = (PluginHost: Application) => {
     });
 
     if (startConverter) {
+        /**
+         * We set the 'default' value of 'out' option because this option is checked before the converter has been started. 
+         * As we kill the process after the convertion of the json's we or not interested in the value of the option.
+         */
+        app.options.setValue('out', 'defult');
         app.converter.addComponent('convert-component', ConvertComponent);
     }
 
