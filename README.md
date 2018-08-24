@@ -20,9 +20,9 @@ npm install typedoc-localization-plugin
 ### Using
 
 > Please take in mind that you are running your local npm packages by `npx` right before the command execution.
-<br />
+> <br />
 > The alternative would be to install the plugin globally with `-g` at the end of the command.
-<br />
+> <br />
 > Then you won't need to use `npx`.
 
 #### Path variable descriptions
