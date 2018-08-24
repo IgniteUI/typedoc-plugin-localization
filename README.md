@@ -1,4 +1,4 @@
-## typedoc-localization-plugin
+## typedoc-plugin-localization
 [![Build Status](https://travis-ci.org/IgniteUI/typedoc-localization-plugin.svg?branch=master)](https://travis-ci.org/IgniteUI/typedoc-localization-plugin)
 ### Plugin
 
