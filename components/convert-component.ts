@@ -1,8 +1,8 @@
+import * as process from 'process';
+
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
 import { Converter } from 'typedoc/dist/lib/converter';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
-import * as process from 'process';
-import { MarkedPlugin } from 'typedoc/dist/lib/output/plugins';
 import { FileOperations } from '../utils/file-operations';
 import { JsonObjectFactory } from '../utils/factories/class-factory';
 import { Factory } from '../utils/factories/factory';
@@ -36,7 +36,7 @@ export class ConvertComponent extends ConverterComponent {
     private onBegin(...rest) {
         const options = this.application.options.getRawValues();
         this.mainDir = options[Constants.CONVERT_COMMAND];
-        
+
         if(!this.fileOperations.ifDirectoryExists(this.mainDir)) {
             this.fileOperations.createDir(this.mainDir);
         }
@@ -48,14 +48,15 @@ export class ConvertComponent extends ConverterComponent {
 
     private onResolveBegin(context) {
         const files = context.project.files;
-        this.fileOperations.prepareOutputDirectory(this.mainDir, files)
+        this.fileOperations.prepareOutputDirectory(this.mainDir, files);
+        this.fileOperations.createFile(this.mainDir, null, 'globalFunctions', 'json');
     }
 
     private onResolveEnd(...rest) {
         // Add the last resolved object
-        if (this.factory && !this.factory.isEmpty()) {   
-            const filePath = this.reflection.sources[0].fileName;                 
-            this.fileOperations.createFileJSON(this.mainDir, filePath, this.factory);
+        if (this.factory && !this.factory.isEmpty()) {
+            const filePath = this.reflection.sources[0].fileName;
+            this.fileOperations.appendFileData(this.mainDir, filePath, this.jsonObjectName, 'json', this.factory.getFileClassContent());
         }
     }
 
@@ -63,11 +64,11 @@ export class ConvertComponent extends ConverterComponent {
         switch(reflection.kind) {
             case ReflectionKind.Enum:
             case ReflectionKind.Class:
-            case ReflectionKind.Interface:                
+            case ReflectionKind.Interface:
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factory.isEmpty()) {
                         const filePath = this.reflection.sources[0].fileName
-                        this.fileOperations.createFileJSON(this.mainDir, filePath, this.factory);                    
+                        this.fileOperations.appendFileData(this.mainDir, filePath, this.jsonObjectName, 'json', this.factory.getFileClassContent());
                     }
                 }
 
@@ -80,9 +81,13 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
+                if (reflection.parent.kind === ReflectionKind.Function) {
+                    break;
+                }
+
                 const getData = this.getCommentData(reflection);
                 this.factory.appendAttribute(reflection.kind, this.jsonObjectName, reflection.name, getData);
-                   
+
                 break;
             case ReflectionKind.Function:
                     const funcData = this.getCommentData(reflection.signatures[0]);
@@ -106,7 +111,7 @@ export class ConvertComponent extends ConverterComponent {
 
         const comment = {};
         comment[Constants.COMMENT] = {};
-        
+
         let splittedObj;
         if(obj.comment.text) {
             splittedObj = this.parser.splitByCharacter(obj.comment.text, '\n');
@@ -117,7 +122,7 @@ export class ConvertComponent extends ConverterComponent {
             splittedObj = this.parser.splitByCharacter(obj.comment.shortText, '\n');
             comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
         }
-        
+
         return comment;
     }
 

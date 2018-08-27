@@ -36,10 +36,12 @@ export class FileOperations {
         if(fs.existsSync(filePath)) {
             if (!fs.statSync(filePath).isFile) {
                 this.logger.error(`The ouput targets exists ${path} but it is not a file!`);
-                return false;
+                return true;
             }
             return true;
         }
+
+        return false;
     }
 
     public removeDirectoryOrFile(path) {
@@ -71,17 +73,21 @@ export class FileOperations {
 
     public prepareOutputDirectory(mainDir, fileObjects) {
         fileObjects.forEach(element => {
-            const dirToExport = this.getProcessedDir(element.fileName);
+            const dirToExport = this.constructFilePath(mainDir, element.fileName);
             if (!dirToExport) {
                 return;
             }
-            if(!this.ifDirectoryExists(`${mainDir}\\${dirToExport}`)) {
-                this.createDir(`${mainDir}\\${dirToExport}`);
+            if(!this.ifDirectoryExists(dirToExport)) {
+                this.createDir(dirToExport);
             }
         });
     }
 
     public getProcessedDir(filePath) {
+        if (!filePath) {
+            return;
+        }
+
         const parsedPath = path.parse(filePath);
         const splitPath = parsedPath.dir.split('/');
         const fileStructureDir = splitPath[0];
@@ -95,16 +101,21 @@ export class FileOperations {
         return `${fileStructureDir}\\${componentDir}`;
     }
 
-    public createFileJSON(mainDir, filePath, factoryObject) {
-        const processedPath = this.getProcessedDir(filePath);
-        let path = mainDir;
-        if (processedPath) {
-            path = `${path}\\${processedPath}`;
-        }
+    public appendFileData(mainDir, filePath, fileName, extension, data) {
+        let path = this.constructFilePath(mainDir, filePath);
 
-        const currentFileFd = this.openFileSync(path, `${factoryObject.name}.json`);
-        fs.writeSync(currentFileFd, JSON.stringify(factoryObject.getFileClassContent(), null, 4));
+        const currentFileFd = this.openFileSync(path, `${fileName}.${extension}`);
+        fs.writeSync(currentFileFd, JSON.stringify(data, null, 4));
         this.closeFileSync(currentFileFd);
+    }
+
+    public createFile(mainDir, filePath,  fileName, fileExtension) {
+        let path = this.constructFilePath(mainDir, filePath);
+
+        const file = `${path}\\${fileName}.${fileExtension}`;
+        if(!this.ifFileExists(file)) {
+            fs.createFileSync(file);
+        }
     }
 
     public getFileJSONData(filePath, fileName) {
@@ -114,5 +125,15 @@ export class FileOperations {
         }
         
         return fs.readJsonSync(`${filePath}\\${fileName}.json`);
+    }
+
+    private constructFilePath(mainDir, filePath) {
+        const processedPath = this.getProcessedDir(filePath);
+        let path = mainDir;
+        if (processedPath) {
+            path = `${path}\\${processedPath}`;
+        }
+
+        return path;
     }
 }
