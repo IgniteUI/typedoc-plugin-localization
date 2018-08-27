@@ -19,5 +19,5 @@ deploy:
     secure: bGiZLqENfDIABsfpEa0BoXn4WK5HSRGFTvy94JZyMkrHssveVdnpgqhgsDPnc4UVg/fQGTiEflr1j+5sCP7u6w19gSeLRmXfehwXpBndB+a8RfClLesavrydrQwsVia2/aJs6RlZ4pobzipfaPJlZksfKFb4eVbNdj3Y4OX24MsUexlrxpdINGaMG5tY8FiuAPAJJoXhHFudV7ZpRnzAysdVY+RGPji4a89uNBw5nl63NwFa9QctUdlA9Mw6RPNfIMQO97PRUsYEz0Q+PXGVRg2bU4ChhXCJu/eCIFzhX2npeGBR0ebsnCBPjbFpgvYw/cFdCvEd2oKRVLRosbiBT/4YMZvu0EzTOGXJzvbiPBiB1uAeJ+ismrpM6Mf6ZiQMhTLxTzEqgBVwCm6+My9NFeOVglZqNixyI5c2CEkuL1gvO25C3BgDDDwG89+hLpBOWLghGBvNOx6/kIWmtfhoBw5KrfoybiTLqJQf80FG35zCvV/tsFj1zk9qMahdmfVuT+FWpjjwe/54Y5i9MvPiICuwGwJxdHzk36LijxYrj28QftIO8cgk8ux71McX44x0z2Tch/qNBmQ1zmBCaMWmJgBgKP6qRyiOkJGm9+fxTldTm1EiFM6FD/tQcgfVG5Tkp36+4+LdgaMxJ5SIpkaNJbm06vgPjamQQ3DX8Da5cLQ=
   on:
     tags: true
-    repo: IgniteUI/typedoc-localization-plugin
+    repo: IgniteUI/typedoc-plugin-localization
     branch: master
