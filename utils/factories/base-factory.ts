@@ -1,6 +1,6 @@
-import { Logger } from 'typedoc/dist/lib/utils/loggers';
+import { AttributeType } from "../enums/json-obj-kind";
 
-export abstract class Factory {
+export abstract class BaseFactory {
     public name;
     protected fileClassContent;
 
@@ -19,7 +19,14 @@ export abstract class Factory {
         }
     }
 
-    public abstract appendAttribute(kind, parentName, attributeName, data);
+    public appendAttribute(parentName, kind, attributeName, data) {
+        if (!data) {
+            return;
+        }        
+        
+        const attributeKind = AttributeType[kind];
+        this.fileClassContent[parentName][attributeKind][attributeName] = data;
+    }
 
     public abstract appendAccessorAttributes(parentName, kind, accessorName, accessorType, data);
 
