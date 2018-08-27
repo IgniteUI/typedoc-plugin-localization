@@ -44,6 +44,9 @@ We can use [Ignite UI for Angular](https://github.com/IgniteUI/igniteui-angular)
 ```
 typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
 ```
+
+Folder `exports` will be automatically created
+
 > This command will create `exports` folder.
 > <br />
 >`projects\igniteui-angular\src\public_api.ts` This file contains the file structure of the project. It takes up to `two` levels.
@@ -119,3 +122,10 @@ So the following command have to be executed:
 ```
 typedoc `<main-proj-file>` --generate-from-json `<json-exports-dir>` --out `<out-typedoc-dir>`
 ```
+
+Example:
+```
+typedoc .\projects\igniteui-angular\src\public_api.ts --generate-from-json .\exports\ --out localized
+```
+
+Folder `localized` will be automatically created.
