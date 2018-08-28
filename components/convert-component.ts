@@ -4,20 +4,24 @@ import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/compon
 import { Converter } from 'typedoc/dist/lib/converter';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
 import { FileOperations } from '../utils/file-operations';
-import { JsonObjectFactory } from '../utils/factories/class-factory';
-import { Factory } from '../utils/factories/factory';
-import { JsonObjectEnumFactory } from '../utils/factories/enum-factory';
+import { ClassFactory } from '../utils/factories/class-factory';
+import { BaseFactory } from '../utils/factories/base-factory';
+import { EnumFactory } from '../utils/factories/enum-factory';
 import { Parser } from '../utils/parser';
 import { Constants } from '../utils/constants';
+import { InterfaceFactory } from '../utils/factories/interface-factory';
+import { FunctionFactory } from '../utils/factories/function-factory';
 
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
     jsonObjectName: string;
-    factory: Factory;
+    factory: BaseFactory;
     fileOperations: FileOperations;
     reflection;
     parser: Parser;
-    mainDir: string;
+    mainDirToExport: string;
+    functionsFileName = 'globalFunctions';
+    globalFuncsJson = {};
 
     public initialize() {
 
@@ -35,10 +39,10 @@ export class ConvertComponent extends ConverterComponent {
 
     private onBegin(...rest) {
         const options = this.application.options.getRawValues();
-        this.mainDir = options[Constants.CONVERT_COMMAND];
+        this.mainDirToExport = options[Constants.CONVERT_COMMAND];
 
-        if(!this.fileOperations.ifDirectoryExists(this.mainDir)) {
-            this.fileOperations.createDir(this.mainDir);
+        if(!this.fileOperations.ifDirectoryExists(this.mainDirToExport)) {
+            this.fileOperations.createDir(this.mainDirToExport);
         }
     }
 
@@ -48,15 +52,26 @@ export class ConvertComponent extends ConverterComponent {
 
     private onResolveBegin(context) {
         const files = context.project.files;
-        this.fileOperations.prepareOutputDirectory(this.mainDir, files);
-        this.fileOperations.createFile(this.mainDir, null, 'globalFunctions', 'json');
+        this.fileOperations.prepareOutputDirectory(this.mainDirToExport, files);
+        /**
+         * Create main file for all global functions.
+         */
+        this.fileOperations.createFile(this.mainDirToExport, null, this.functionsFileName, 'json');
     }
 
     private onResolveEnd(...rest) {
         // Add the last resolved object
         if (this.factory && !this.factory.isEmpty()) {
             const filePath = this.reflection.sources[0].fileName;
-            this.fileOperations.appendFileData(this.mainDir, filePath, this.jsonObjectName, 'json', this.factory.getFileClassContent());
+            this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factory.getJsonContent());
+        }
+
+        /**
+         * Add all global functions into the file which corresponds for them file; 
+         */ 
+        const funcObjKeys = Object.keys(this.globalFuncsJson);
+        if (funcObjKeys.length) {
+            this.fileOperations.appendFileData(this.mainDirToExport, null, this.functionsFileName, 'json', this.globalFuncsJson);
         }
     }
 
@@ -68,14 +83,14 @@ export class ConvertComponent extends ConverterComponent {
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factory.isEmpty()) {
                         const filePath = this.reflection.sources[0].fileName
-                        this.fileOperations.appendFileData(this.mainDir, filePath, this.jsonObjectName, 'json', this.factory.getFileClassContent());
+                        this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factory.getJsonContent());
                     }
                 }
 
+                const data = this.getCommentData(reflection);
                 this.jsonObjectName = reflection.name;
                 this.reflection = reflection;
-                this.factory = this.instanceBuilder(reflection.kind, this.jsonObjectName);
-                const data = this.getCommentData(reflection);
+                this.factory = this.instanceBuilder(reflection.kind, reflection.name);
                 this.factory.buildObjectStructure(data);
                 break;
             case ReflectionKind.Property:
@@ -86,12 +101,16 @@ export class ConvertComponent extends ConverterComponent {
                 }
 
                 const getData = this.getCommentData(reflection);
-                this.factory.appendAttribute(reflection.kind, this.jsonObjectName, reflection.name, getData);
+                this.factory.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
 
                 break;
             case ReflectionKind.Function:
                     const funcData = this.getCommentData(reflection.signatures[0]);
-                    this.factory.appendAttribute(reflection.kind, this.jsonObjectName, reflection.name, funcData);
+                    const funcFactory = this.instanceBuilder(reflection.kind, reflection.name);
+                    funcFactory.buildObjectStructure(funcData);
+                    if (!funcFactory.isEmpty()) {
+                        this.globalFuncsJson = Object.assign(funcFactory.getJsonContent(), this.globalFuncsJson);
+                    }
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
@@ -126,11 +145,18 @@ export class ConvertComponent extends ConverterComponent {
         return comment;
     }
 
-    private instanceBuilder(objectType, objectName): Factory {
-        if (objectType === ReflectionKind.Enum) {
-            return new JsonObjectEnumFactory(objectName)
+    private instanceBuilder(objectType, objectName): BaseFactory {
+        switch(objectType) {
+            case ReflectionKind.Enum:
+                return new EnumFactory(objectName);
+            case ReflectionKind.Interface:
+                return new InterfaceFactory(objectName);
+            case ReflectionKind.Function:
+                return new FunctionFactory(objectName);
+            case ReflectionKind.Class:
+                return new ClassFactory(objectName);
+            default:
+                null;
         }
-
-        return new JsonObjectFactory(objectName);
     }
 }
