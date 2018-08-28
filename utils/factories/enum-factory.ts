@@ -15,14 +15,10 @@ export class EnumFactory extends BaseFactory {
         this.fileClassContent[this.name][ENUM_MEMBER_KEY] = {};
     }
     
-    // public appendAttribute(parentName, kind, attributeName, data) {
-
-    // }
-    
     public isEmpty() {
-        return !this.fileClassContent[this.name]['comment'] &&
-            !Object.keys(this.fileClassContent[this.name][ENUM_MEMBER_KEY]).length;
-    }
+        return super.isEmpty() &&
+        !Object.keys(this.fileClassContent[this.name][ENUM_MEMBER_KEY]).length;
+    }    
     
-    public appendAccessorAttributes(parentName: any, kind: any, accessorName: any, accessorType: any, data: any) { };
+    public appendAccessorAttributes(parentName: any, kind: any, accessorName: any, accessorType: any, data: any) { }
 }

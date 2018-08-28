@@ -4,7 +4,6 @@ import { AttributeType } from '../enums/json-obj-kind';
 const PROPERTIES_KEY = AttributeType[AttributeType.properties];
 const METHODS_KEY = AttributeType[AttributeType.methods];
 const ACCESSORS_KEY = AttributeType[AttributeType.accessors];
-const FUNCTIONS_KEY = AttributeType[AttributeType.functions]
 
 export class ClassFactory extends BaseFactory {
 
@@ -19,10 +18,6 @@ export class ClassFactory extends BaseFactory {
         this.fileClassContent[this.name][METHODS_KEY] = {};
         this.fileClassContent[this.name][ACCESSORS_KEY] = {};
     }
-
-    // public appendAttribute(parentName, kind, attributeName, data) {
-    //     super(parentName, kind, attributeName, data);
-    // }
 
     public appendAccessorAttributes(parentName, kind, accessorName, accessorType, data) {
         if(!data) {
@@ -40,7 +35,7 @@ export class ClassFactory extends BaseFactory {
     }
 
     public isEmpty() {
-        return !this.fileClassContent[this.name]['comment'] && 
+        return super.isEmpty() && 
             !Object.keys(this.fileClassContent[this.name][PROPERTIES_KEY]).length &&
             !Object.keys(this.fileClassContent[this.name][METHODS_KEY]).length &&
             !Object.keys(this.fileClassContent[this.name][ACCESSORS_KEY]).length;

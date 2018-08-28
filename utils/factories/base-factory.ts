@@ -18,7 +18,7 @@ export abstract class BaseFactory {
             this.fileClassContent[this.name] = data;
         }
     }
-
+    
     public appendAttribute(parentName, kind, attributeName, data) {
         if (!data) {
             return;
@@ -28,11 +28,14 @@ export abstract class BaseFactory {
         this.fileClassContent[parentName][attributeKind][attributeName] = data;
     }
 
+    
     public abstract appendAccessorAttributes(parentName, kind, accessorName, accessorType, data);
 
-    public abstract isEmpty();
+    public isEmpty() {
+        return !this.fileClassContent[this.name]['comment'];
+    }
 
-    public getFileClassContent() {
+    public getJsonContent() {
         return this.fileClassContent;
     }
 }
