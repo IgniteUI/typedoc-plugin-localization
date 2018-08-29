@@ -50,7 +50,7 @@ export class RenderComponenet extends RendererComponent {
                     let processedDir = this.mainDirOfJsons;
                     const parsedPath = this.fileOperations.getProcessedDir(filePath);
                     if (parsedPath) {
-                        processedDir = `${processedDir}\\${parsedPath}`;
+                        processedDir = path.join(processedDir, parsedPath);
                     }
                     this.data = this.fileOperations.getFileData(processedDir, reflection.name, 'json');
                     if (this.data) {

@@ -57,8 +57,10 @@ export class FileOperations {
 
     public openFileSync(dirPath, fileName) {
         if (this.ifDirectoryExists(dirPath)) {
-            return fs.openSync(`${dirPath}\\${fileName}`, 'w+');
+            const filePath = path.join(dirPath, fileName);
+            return fs.openSync(filePath, 'w+');
         } 
+
         this.logger.error(`Direcotry with path: ${dirPath} does not exists!`);
         return null;
     }
@@ -98,7 +100,7 @@ export class FileOperations {
             return fileStructureDir;
         }
 
-        return `${fileStructureDir}\\${componentDir}`;
+        return path.join(fileStructureDir, componentDir);
     }
 
     public appendFileData(mainDir, filePath, fileName, extension, data) {
@@ -110,9 +112,9 @@ export class FileOperations {
     }
 
     public createFile(mainDir, filePath,  fileName, fileExtension) {
-        let path = this.constructFilePath(mainDir, filePath);
+        let constructedFilePath = this.constructFilePath(mainDir, filePath);
 
-        const file = `${path}\\${fileName}.${fileExtension}`;
+        const file = path.join(constructedFilePath, `${fileName}.${fileExtension}`);
         if(!this.ifFileExists(file)) {
             fs.createFileSync(file);
         }
@@ -129,11 +131,11 @@ export class FileOperations {
 
     private constructFilePath(mainDir, filePath) {
         const processedPath = this.getProcessedDir(filePath);
-        let path = mainDir;
+        let filePathBuilder = mainDir;
         if (processedPath) {
-            path = `${path}\\${processedPath}`;
+            filePathBuilder = path.join(filePathBuilder, processedPath);
         }
 
-        return path;
+        return filePathBuilder;
     }
 }
