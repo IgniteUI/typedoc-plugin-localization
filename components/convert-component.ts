@@ -86,7 +86,7 @@ export class ConvertComponent extends ConverterComponent {
                     }
                 }
 
-                const data = this.getCommentData(reflection);
+                const data = reflection.comment ? this.getCommentData(reflection.comment) : null;
                 this.jsonObjectName = reflection.name;
                 this.reflection = reflection;
                 this.factory = this.instanceBuilder(reflection.kind, reflection.name);
@@ -99,12 +99,13 @@ export class ConvertComponent extends ConverterComponent {
                     break;
                 }
 
-                const getData = this.getCommentData(reflection);
+                const getData = reflection.comment ? this.getCommentData(reflection.comment) : null;
                 this.factory.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
-
+                this.getCommentInfo(reflection, reflection.kind);
                 break;
             case ReflectionKind.Function:
-                    const funcData = this.getCommentData(reflection.signatures[0]);
+                    const commentObj = reflection.signatures[0].comment;
+                    const funcData = commentObj ? this.getCommentData(commentObj) : null;
                     const funcFactory = this.instanceBuilder(reflection.kind, reflection.name);
                     funcFactory.buildObjectStructure(funcData);
                     if (!funcFactory.isEmpty()) {
@@ -115,30 +116,53 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.SetSignature:
                 const accessorName = reflection.parent.name;
                 const accessorType = reflection.kind;
-                const accessorData = this.getCommentData(reflection);
+                const accessorData = reflection.comment ? this.getCommentData(reflection.comment) : null;
                 this.factory.appendAccessorAttributes(this.jsonObjectName, reflection.parent.kind, accessorName, accessorType, accessorData);
+                this.getCommentInfo(reflection, reflection.parent.kind)
             default:
                 return;
         }
     }
 
-    private getCommentData(obj) {
-        if (!obj.comment) {
-            return;
+    
+    private getCommentInfo(reflection,  reflectionKind) {
+        if (reflection.comment && reflection.comment.tags) {
+            this.appendCommentTags(reflection, reflectionKind);            
         }
+    }
 
+    private appendCommentTags(reflection, reflectionKind) {
+        let tags = {};
+        tags['tags'] = {};
+        reflection.comment.tags.forEach(tag => {
+            const tagComment = this.getCommentData(tag);
+            tags['tags'] = Object.assign(tagComment, tags['tags']);
+        });
+
+        if (reflectionKind === ReflectionKind.Accessor) {
+            this.factory.appendAccessorAttributes(this.jsonObjectName, reflectionKind, reflection.parent.name, reflection.kind, tags);
+        } else {
+            this.factory.appendAttribute(this.jsonObjectName, reflectionKind, reflection.name, tags);
+        }
+    }
+
+    private getCommentData(obj) {
         const comment = {};
         comment[Constants.COMMENT] = {};
 
         let splittedObj;
-        if(obj.comment.text) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.text, '\n');
+        if(obj.text) {
+            splittedObj = this.parser.splitByCharacter(obj.text, '\n');
             comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
         }
 
-        if(obj.comment.shortText) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.shortText, '\n');
+        if(obj.shortText) {
+            splittedObj = this.parser.splitByCharacter(obj.shortText, '\n');
             comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
+        }
+
+        if(obj.tagName) {
+            comment[Constants.COMMENT]['tagName'] = obj.tagName;
         }
 
         return comment;

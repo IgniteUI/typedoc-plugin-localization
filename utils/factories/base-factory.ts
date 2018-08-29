@@ -25,7 +25,13 @@ export abstract class BaseFactory {
         }        
         
         const attributeKind = AttributeType[kind];
-        this.fileClassContent[parentName][attributeKind][attributeName] = data;
+        const ifExist = this.fileClassContent[parentName][attributeKind][attributeName];
+        if (ifExist) {
+            this.fileClassContent[parentName][attributeKind][attributeName] = 
+                Object.assign(data, this.fileClassContent[parentName][attributeKind][attributeName]);
+        } else {
+            this.fileClassContent[parentName][attributeKind][attributeName] = data;
+        }
     }
 
     
