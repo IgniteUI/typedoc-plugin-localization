@@ -8,7 +8,7 @@ import { Constants } from './utils/constants';
 
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner;
-    console.log('from index');
+
     app.options.addComponent('options-component', OptComponent);
 
     let startConverter = false; 

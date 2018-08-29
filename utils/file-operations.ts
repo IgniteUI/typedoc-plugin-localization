@@ -118,13 +118,13 @@ export class FileOperations {
         }
     }
 
-    public getFileJSONData(filePath, fileName) {
-        const jsonFilePath = `${filePath}\\${fileName}.json`
+    public getFileData(filePath, fileName, fileExtension) {
+        const jsonFilePath = path.join(filePath, `${fileName}.${fileExtension}`);
         if (!this.ifDirectoryExists(filePath) || !this.ifFileExists(jsonFilePath)) {
             return null;
         }
         
-        return fs.readJsonSync(`${filePath}\\${fileName}.json`);
+        return fs.readJsonSync(jsonFilePath);
     }
 
     private constructFilePath(mainDir, filePath) {

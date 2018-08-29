@@ -20,7 +20,6 @@ export class ConvertComponent extends ConverterComponent {
     reflection;
     parser: Parser;
     mainDirToExport: string;
-    functionsFileName = 'globalFunctions';
     globalFuncsJson = {};
 
     public initialize() {
@@ -56,7 +55,7 @@ export class ConvertComponent extends ConverterComponent {
         /**
          * Create main file for all global functions.
          */
-        this.fileOperations.createFile(this.mainDirToExport, null, this.functionsFileName, 'json');
+        this.fileOperations.createFile(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
     }
 
     private onResolveEnd(...rest) {
@@ -71,7 +70,7 @@ export class ConvertComponent extends ConverterComponent {
          */ 
         const funcObjKeys = Object.keys(this.globalFuncsJson);
         if (funcObjKeys.length) {
-            this.fileOperations.appendFileData(this.mainDirToExport, null, this.functionsFileName, 'json', this.globalFuncsJson);
+            this.fileOperations.appendFileData(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json', this.globalFuncsJson);
         }
     }
 

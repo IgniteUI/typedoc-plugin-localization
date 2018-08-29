@@ -15,7 +15,7 @@ By using this plugin you will be able to:
 ### Installing
 
 ```
-npm install typedoc-plugin-localization
+npm install typedoc-plugin-localization --save-dev
 ```
 
 ### Using
@@ -36,13 +36,13 @@ npm install typedoc-plugin-localization
 #### Step 1
 In order to generate the json representation of each module of your application you will have to execute the command below: 
 ```
-typedoc `<main-proj-file>` --generate-json `<json-export-dir>`
+npx typedoc `<main-proj-file>` --generate-json `<json-export-dir>`
 ```
 
 We can use [Ignite UI for Angular](https://github.com/IgniteUI/igniteui-angular) repository for Example:
 
 ```
-typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
+npx typedoc projects\igniteui-angular\src\public_api.ts --generate-json exports
 ```
 
 Folder `exports` will be automatically created
@@ -120,12 +120,12 @@ When you finish with the translations you will have to generate the documentatio
 <br />
 So the following command have to be executed:
 ```
-typedoc `<main-proj-file>` --generate-from-json `<json-exports-dir>` --out `<out-typedoc-dir>`
+npx typedoc `<main-proj-file>` --generate-from-json `<json-exports-dir>` --out `<out-typedoc-dir>`
 ```
 
 Example:
 ```
-typedoc .\projects\igniteui-angular\src\public_api.ts --generate-from-json .\exports\ --out localized
+npx typedoc .\projects\igniteui-angular\src\public_api.ts --generate-from-json .\exports\ --out localized
 ```
 
 Folder `localized` will be automatically created.

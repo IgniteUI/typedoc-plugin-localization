@@ -7,4 +7,6 @@ export class Constants {
     static readonly RENDER_COMMAND = 'generate-from-json';
     static readonly SHORT_CONVERT_COMMAND = 'gen-json';
     static readonly SHORT_RENDER_COMMAND = 'gen-from-json';
+
+    static readonly GLOBAL_FUNCS_FILE_NAME = 'globalFunctions';
 }

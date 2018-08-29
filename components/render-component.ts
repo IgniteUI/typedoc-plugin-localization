@@ -1,21 +1,17 @@
 import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
-import { Renderer } from 'typedoc/dist/lib/output/renderer';
-import { RendererEvent, MarkdownEvent } from 'typedoc/dist/lib/output/events';
-import * as fs from 'fs';
 import * as path from 'path';
-import { MarkedPlugin } from 'typedoc/dist/lib/output/plugins';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
-import { Options } from 'typedoc/dist/lib/utils/options';
-import { DiscoverEvent } from 'typedoc/dist/lib/utils/options/options';
 import { FileOperations } from '../utils/file-operations';
 import { AttributeType } from '../utils/enums/json-obj-kind';
 import { Constants } from '../utils/constants';
+import { RendererEvent } from 'typedoc/dist/lib/output/events';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
     fileOperations: FileOperations;
     data: JSON;
-    mainDir: string;
+    mainDirOfJsons: string;
+    globalFuncsData;
 
     public initialize() {
         this.listenTo(this.owner, {
@@ -25,12 +21,14 @@ export class RenderComponenet extends RendererComponent {
         this.fileOperations = new FileOperations(this.application.logger);
     }
 
-    private onRenderBegin(event: RendererEvent) {        
+    private onRenderBegin(event: RendererEvent) {
+        
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
         const localizeOpt = options[Constants.RENDER_COMMAND];
         if (localizeOpt) {
-            this.mainDir = localizeOpt;
+            this.mainDirOfJsons = localizeOpt;
+            this.globalFuncsData = this.fileOperations.getFileData(this.mainDirOfJsons, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
             this.runCommentReplacements(reflections);
         }
     }
@@ -48,20 +46,24 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Class:
             case ReflectionKind.Enum:
             case ReflectionKind.Interface:
-                const filePath = reflection.sources[0].fileName;
-                let processedDir = this.mainDir;
-                const parsedPath = this.fileOperations.getProcessedDir(filePath);
-                if (parsedPath) {
-                    processedDir = `${processedDir}\\${parsedPath}`;
-                }
-                this.data = this.fileOperations.getFileJSONData(processedDir, reflection.name);
-                if (this.data) {
-                    this.updateComment(reflection, this.data[reflection.name]);
-                }
+                    const filePath = reflection.sources[0].fileName;
+                    let processedDir = this.mainDirOfJsons;
+                    const parsedPath = this.fileOperations.getProcessedDir(filePath);
+                    if (parsedPath) {
+                        processedDir = `${processedDir}\\${parsedPath}`;
+                    }
+                    this.data = this.fileOperations.getFileData(processedDir, reflection.name, 'json');
+                    if (this.data) {
+                        this.updateComment(reflection, this.data[reflection.name]);
+                    }
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
+                    if (reflection.parent === ReflectionKind.Function) {
+                        break;
+                    }
+
                     const parent = this.getParentBasedOnType(reflection, reflection.kind);
                     const parentName = parent.name;
                     const attributeName = reflection.name;
@@ -69,6 +71,14 @@ export class RenderComponenet extends RendererComponent {
                     if(attributeData) {
                         this.updateComment(reflection, attributeData);
                     }
+                break;
+            case ReflectionKind.Function:
+                    if (!this.globalFuncsData) {
+                        break;
+                    }
+                    const funcName = reflection.name;
+                    const funcData = this.globalFuncsData[funcName];
+                    this.updateComment(reflection.signatures[0], funcData);
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
@@ -110,13 +120,14 @@ export class RenderComponenet extends RendererComponent {
             return;
         }
 
+        let parsed;
         if(reflection.comment.text) {
-            const parsed = dataObj[Constants.COMMENT][Constants.TEXT].join('\n');
+            parsed = dataObj[Constants.COMMENT][Constants.TEXT].join('\n');
             reflection.comment.text = parsed;
         }
 
         if(reflection.comment.shortText) {
-            const parsed = dataObj[Constants.COMMENT][Constants.SHORT_TEXT].join('\n');
+            parsed = dataObj[Constants.COMMENT][Constants.SHORT_TEXT].join('\n');
             reflection.comment.shortText = parsed;
         }
     }
