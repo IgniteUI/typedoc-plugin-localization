@@ -31,13 +31,7 @@ export class ClassFactory extends BaseFactory {
             this.fileClassContent[parentName][attributeKind][accessorName] = {};
         }
 
-        const ifExist = this.fileClassContent[parentName][attributeKind][accessorName][accesorTypeAsString];
-        if (ifExist) {
-            this.fileClassContent[parentName][attributeKind][accessorName][accesorTypeAsString] = 
-                Object.assign(data, this.fileClassContent[parentName][attributeKind][accessorName][accesorTypeAsString]);
-        } else {
-            this.fileClassContent[parentName][attributeKind][accessorName][accesorTypeAsString] = data;
-        }
+        this.fileClassContent[parentName][attributeKind][accessorName][accesorTypeAsString] = data;
     }
 
     public isEmpty() {
