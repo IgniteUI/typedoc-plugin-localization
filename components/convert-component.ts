@@ -123,12 +123,13 @@ export class ConvertComponent extends ConverterComponent {
 
     
     private getCommentInfo(reflection) {
-        let comment = {};
-        if (reflection.comment) {
-            comment = this.getCommentData(reflection.comment);
+        if (!reflection.comment) {
+            return;
         }
 
-        if (reflection.comment && reflection.comment.tags) {
+        let comment = this.getCommentData(reflection.comment);
+
+        if (reflection.comment.tags) {
             comment = Object.assign(this.getTagComments(reflection), comment);            
         }
 
@@ -139,8 +140,10 @@ export class ConvertComponent extends ConverterComponent {
         let tags = {};
         tags['tags'] = {};
         reflection.comment.tags.forEach(tag => {
-            const tagComment = this.getCommentData(tag);
-            tags['tags'] = Object.assign(tagComment, tags['tags']);
+            let tagComment = this.getCommentData(tag);
+            if (tag.tagName) {
+                tags['tags'][tag.tagName] = tagComment;
+            }
         });
 
         return tags;
@@ -154,11 +157,19 @@ export class ConvertComponent extends ConverterComponent {
         let splittedObj;
         if(obj.text) {
             splittedObj = this.parser.splitByCharacter(obj.text, '\n');
+            if (splittedObj.length === 1) {
+                splittedObj = splittedObj[0];
+            }
+
             comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
         }
 
         if(obj.shortText) {
             splittedObj = this.parser.splitByCharacter(obj.shortText, '\n');
+            if (splittedObj.length === 1) {
+                splittedObj = splittedObj[0];
+            }
+            
             comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
         }
 
