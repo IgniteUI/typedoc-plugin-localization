@@ -1,4 +1,6 @@
 export class Constants {
+    static readonly TAGS = 'tags';
+    static readonly TAG_NAME = 'tagName';
     static readonly COMMENT = 'comment';
     static readonly TEXT = 'text';
     static readonly SHORT_TEXT = 'shortText';

@@ -130,19 +130,19 @@ export class ConvertComponent extends ConverterComponent {
         let comment = this.getCommentData(reflection.comment);
 
         if (reflection.comment.tags) {
-            comment = Object.assign(this.getTagComments(reflection), comment);            
+            comment[Constants.COMMENT] = Object.assign(this.getTagComments(reflection.comment), comment[Constants.COMMENT]);            
         }
 
         return comment;
     }
 
-    private getTagComments(reflection) {
+    private getTagComments(comment) {
         let tags = {};
-        tags['tags'] = {};
-        reflection.comment.tags.forEach(tag => {
+        tags[Constants.TAGS] = {};
+        comment.tags.forEach(tag => {
             let tagComment = this.getCommentData(tag);
             if (tag.tagName) {
-                tags['tags'][tag.tagName] = tagComment;
+                tags[Constants.TAGS][tag.tagName] = tagComment;
             }
         });
 
@@ -174,7 +174,7 @@ export class ConvertComponent extends ConverterComponent {
         }
 
         if(obj.tagName) {
-            comment[Constants.COMMENT]['tagName'] = obj.tagName;
+            comment[Constants.COMMENT][Constants.TAG_NAME] = obj.tagName;
         }
 
         return comment;
