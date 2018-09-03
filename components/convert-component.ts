@@ -133,7 +133,29 @@ export class ConvertComponent extends ConverterComponent {
             comment[Constants.COMMENT] = Object.assign(this.getTagComments(reflection.comment), comment[Constants.COMMENT]);            
         }
 
+        if (reflection.parameters) {
+            comment[Constants.COMMENT] = Object.assign(this.getParamsComments(reflection), comment[Constants.COMMENT]);
+        }
+
         return comment;
+    }
+
+    private getParamsComments(reflection) {
+        let params = {};
+        params[Constants.PARAMS] = {};
+        reflection.parameters.forEach(param => {
+            if (!param.comment) {
+                return;
+            }
+
+            const paramComment = this.getCommentData(param.comment);
+            const paramCommentKeys = Object.keys(paramComment[Constants.COMMENT]).length;
+            if (paramCommentKeys) {
+                params[Constants.PARAMS][param.name] = paramComment;
+            }
+        });
+
+        return params;
     }
 
     private getTagComments(comment) {
