@@ -86,7 +86,7 @@ export class ConvertComponent extends ConverterComponent {
                     }
                 }
 
-                const data = this.getCommentData(reflection);
+                const data = this.getCommentInfo(reflection);
                 this.jsonObjectName = reflection.name;
                 this.reflection = reflection;
                 this.factory = this.instanceBuilder(reflection.kind, reflection.name);
@@ -99,12 +99,11 @@ export class ConvertComponent extends ConverterComponent {
                     break;
                 }
 
-                const getData = this.getCommentData(reflection);
+                const getData = this.getCommentInfo(reflection);
                 this.factory.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
-
                 break;
             case ReflectionKind.Function:
-                    const funcData = this.getCommentData(reflection.signatures[0]);
+                    const funcData = this.getCommentInfo(reflection.signatures[0]);
                     const funcFactory = this.instanceBuilder(reflection.kind, reflection.name);
                     funcFactory.buildObjectStructure(funcData);
                     if (!funcFactory.isEmpty()) {
@@ -115,30 +114,67 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.SetSignature:
                 const accessorName = reflection.parent.name;
                 const accessorType = reflection.kind;
-                const accessorData = this.getCommentData(reflection);
+                const accessorData = this.getCommentInfo(reflection);
                 this.factory.appendAccessorAttributes(this.jsonObjectName, reflection.parent.kind, accessorName, accessorType, accessorData);
             default:
                 return;
         }
     }
 
-    private getCommentData(obj) {
-        if (!obj.comment) {
+    
+    private getCommentInfo(reflection) {
+        if (!reflection.comment) {
             return;
         }
 
+        let comment = this.getCommentData(reflection.comment);
+
+        if (reflection.comment.tags) {
+            comment[Constants.COMMENT] = Object.assign(this.getTagComments(reflection.comment), comment[Constants.COMMENT]);            
+        }
+
+        return comment;
+    }
+
+    private getTagComments(comment) {
+        let tags = {};
+        tags[Constants.TAGS] = {};
+        comment.tags.forEach(tag => {
+            let tagComment = this.getCommentData(tag);
+            if (tag.tagName) {
+                tags[Constants.TAGS][tag.tagName] = tagComment;
+            }
+        });
+
+        return tags;
+    }
+
+    private getCommentData(obj) {
         const comment = {};
         comment[Constants.COMMENT] = {};
 
+
         let splittedObj;
-        if(obj.comment.text) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.text, '\n');
+        if(obj.text) {
+            splittedObj = this.parser.splitByCharacter(obj.text, '\n');
+            if (splittedObj.length === 1) {
+                splittedObj = splittedObj[0];
+            }
+
             comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
         }
 
-        if(obj.comment.shortText) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.shortText, '\n');
+        if(obj.shortText) {
+            splittedObj = this.parser.splitByCharacter(obj.shortText, '\n');
+            if (splittedObj.length === 1) {
+                splittedObj = splittedObj[0];
+            }
+            
             comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
+        }
+
+        if(obj.tagName) {
+            comment[Constants.COMMENT][Constants.TAG_NAME] = obj.tagName;
         }
 
         return comment;
