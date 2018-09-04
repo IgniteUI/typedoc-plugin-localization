@@ -107,7 +107,7 @@ export class FileOperations {
         let path = this.constructFilePath(mainDir, filePath);
 
         const currentFileFd = this.openFileSync(path, `${fileName}.${extension}`);
-        fs.writeSync(currentFileFd, JSON.stringify(data, null, 4));
+        fs.writeSync(currentFileFd, JSON.stringify(data, null, 4), null, 'utf8');
         this.closeFileSync(currentFileFd);
     }
 
