@@ -5,6 +5,7 @@ import { FileOperations } from '../utils/file-operations';
 import { AttributeType } from '../utils/enums/json-obj-kind';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
+import { Parser } from '../utils/parser';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
@@ -12,6 +13,7 @@ export class RenderComponenet extends RendererComponent {
     data: JSON;
     mainDirOfJsons: string;
     globalFuncsData;
+    parser: Parser;
 
     public initialize() {
         this.listenTo(this.owner, {
@@ -19,6 +21,7 @@ export class RenderComponenet extends RendererComponent {
         });
         
         this.fileOperations = new FileOperations(this.application.logger);
+        this.parser = new Parser();
     }
 
     private onRenderBegin(event: RendererEvent) {
@@ -122,12 +125,12 @@ export class RenderComponenet extends RendererComponent {
 
         let parsed;
         if(reflection.comment.text) {
-            parsed = dataObj[Constants.COMMENT][Constants.TEXT].join('\n');
+            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.TEXT], '\n');
             reflection.comment.text = parsed;
         }
 
         if(reflection.comment.shortText) {
-            parsed = dataObj[Constants.COMMENT][Constants.SHORT_TEXT].join('\n');
+            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.SHORT_TEXT], '\n');
             reflection.comment.shortText = parsed;
         }
     }

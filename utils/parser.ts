@@ -1,10 +1,21 @@
+import { isArray } from "util";
+
 export class Parser {
     public splitByCharacter(text, char) {
-        return this.removeEmptyStrings(text.split(char));
+        const res = this.removeEmptyStrings(text.split(char));
+        if (res.length === 1) {
+            return res[0]
+        }
+
+        return res;
     }
 
-    public joinByCharacter(array, char) {
-        return this.removeEmptyStrings(array.join(char));
+    public joinByCharacter(obj, char) {
+        if (!isArray(obj)) {
+            return obj;
+        }
+
+        return obj.join(char);
     }
 
     private removeEmptyStrings(splittedText) {
