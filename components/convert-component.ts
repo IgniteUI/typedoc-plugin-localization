@@ -130,7 +130,7 @@ export class ConvertComponent extends ConverterComponent {
         let comment = this.getCommentData(reflection.comment);
 
         if (reflection.comment.tags) {
-            comment[Constants.COMMENT] = Object.assign(this.getTagComments(reflection.comment), comment[Constants.COMMENT]);            
+            comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);            
         }
 
         if (reflection.parameters) {
@@ -158,7 +158,7 @@ export class ConvertComponent extends ConverterComponent {
         return Object.keys(params[Constants.PARAMS]).length ? params : {};
     }
 
-    private getTagComments(comment) {
+    private getTagsComments(comment) {
         let tags = {};
         tags[Constants.TAGS] = {};
         comment.tags.forEach(tag => {
