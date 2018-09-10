@@ -15,7 +15,7 @@ import { FunctionFactory } from '../utils/factories/function-factory';
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
     jsonObjectName: string;
-    factory: BaseFactory;
+    factoryInstance: BaseFactory;
     fileOperations: FileOperations;
     reflection;
     parser: Parser;
@@ -60,9 +60,9 @@ export class ConvertComponent extends ConverterComponent {
 
     private onResolveEnd(...rest) {
         // Add the last resolved object
-        if (this.factory && !this.factory.isEmpty()) {
+        if (this.factoryInstance && !this.factoryInstance.isEmpty()) {
             const filePath = this.reflection.sources[0].fileName;
-            this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factory.getJsonContent());
+            this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
         }
 
         /**
@@ -80,17 +80,17 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.Class:
             case ReflectionKind.Interface:
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
-                    if (!this.factory.isEmpty()) {
+                    if (!this.factoryInstance.isEmpty()) {
                         const filePath = this.reflection.sources[0].fileName
-                        this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factory.getJsonContent());
+                        this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
                     }
                 }
 
-                const data = this.getCommentData(reflection);
+                const data = this.getCommentInfo(reflection);
                 this.jsonObjectName = reflection.name;
                 this.reflection = reflection;
-                this.factory = this.instanceBuilder(reflection.kind, reflection.name);
-                this.factory.buildObjectStructure(data);
+                this.factoryInstance = this.instanceBuilder(reflection.kind, reflection.name);
+                this.factoryInstance.buildObjectStructure(data);
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
@@ -99,46 +99,96 @@ export class ConvertComponent extends ConverterComponent {
                     break;
                 }
 
-                const getData = this.getCommentData(reflection);
-                this.factory.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
-
+                const getData = this.getCommentInfo(reflection);
+                this.factoryInstance.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
                 break;
             case ReflectionKind.Function:
-                    const funcData = this.getCommentData(reflection.signatures[0]);
-                    const funcFactory = this.instanceBuilder(reflection.kind, reflection.name);
-                    funcFactory.buildObjectStructure(funcData);
-                    if (!funcFactory.isEmpty()) {
-                        this.globalFuncsJson = Object.assign(funcFactory.getJsonContent(), this.globalFuncsJson);
+                    const funcData = this.getCommentInfo(reflection.signatures[0]);
+                    const funcInstance = this.instanceBuilder(reflection.kind, reflection.name);
+                    funcInstance.buildObjectStructure(funcData);
+                    if (!funcInstance.isEmpty()) {
+                        this.globalFuncsJson = Object.assign(funcInstance.getJsonContent(), this.globalFuncsJson);
                     }
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
                 const accessorName = reflection.parent.name;
                 const accessorType = reflection.kind;
-                const accessorData = this.getCommentData(reflection);
-                this.factory.appendAccessorAttributes(this.jsonObjectName, reflection.parent.kind, accessorName, accessorType, accessorData);
+                const accessorData = this.getCommentInfo(reflection);
+                this.factoryInstance.appendAccessorAttributes(this.jsonObjectName, reflection.parent.kind, accessorName, accessorType, accessorData);
             default:
                 return;
         }
     }
 
-    private getCommentData(obj) {
-        if (!obj.comment) {
+    
+    private getCommentInfo(reflection) {
+        if (!reflection.comment) {
             return;
         }
 
+        let comment = this.getCommentData(reflection.comment);
+
+        if (reflection.comment.tags) {
+            comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);            
+        }
+
+        if (reflection.parameters) {
+            comment[Constants.COMMENT] = Object.assign(this.getParamsComments(reflection), comment[Constants.COMMENT]);
+        }
+
+        return comment;
+    }
+
+    private getParamsComments(reflection) {
+        let params = {};
+        params[Constants.PARAMS] = {};
+        reflection.parameters.forEach(param => {
+            if (!param.comment) {
+                return;
+            }
+
+            const paramComment = this.getCommentData(param.comment);
+            const paramCommentKeys = Object.keys(paramComment[Constants.COMMENT]);
+            if (paramCommentKeys.length) {
+                params[Constants.PARAMS][param.name] = paramComment;
+            }
+        });
+
+        return Object.keys(params[Constants.PARAMS]).length ? params : {};
+    }
+
+    private getTagsComments(comment) {
+        let tags = {};
+        tags[Constants.TAGS] = {};
+        comment.tags.forEach(tag => {
+            let tagComment = this.getCommentData(tag);
+            if (tag.tagName) {
+                tags[Constants.TAGS][tag.tagName] = tagComment;
+            }
+        });
+
+        return tags;
+    }
+
+    private getCommentData(obj) {
         const comment = {};
         comment[Constants.COMMENT] = {};
 
+
         let splittedObj;
-        if(obj.comment.text) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.text, '\n');
+        if(obj.text && obj.text.trim().length) {
+            splittedObj = this.parser.splitByCharacter(obj.text, '\n');
             comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
         }
 
-        if(obj.comment.shortText) {
-            splittedObj = this.parser.splitByCharacter(obj.comment.shortText, '\n');
+        if(obj.shortText && obj.shortText.trim().length) {
+            splittedObj = this.parser.splitByCharacter(obj.shortText, '\n');
             comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
+        }
+
+        if(obj.tagName) {
+            comment[Constants.COMMENT][Constants.TAG_NAME] = obj.tagName;
         }
 
         return comment;

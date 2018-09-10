@@ -26,6 +26,7 @@ export abstract class BaseFactory {
         
         const attributeKind = AttributeType[kind];
         this.fileClassContent[parentName][attributeKind][attributeName] = data;
+
     }
 
     
