@@ -123,17 +123,18 @@ export class ConvertComponent extends ConverterComponent {
 
     
     private getCommentInfo(reflection) {
+        const options = this.application.options.getRawValues();
         if (!reflection.comment) {
             return;
         }
 
         let comment = this.getCommentData(reflection.comment);
 
-        if (reflection.comment.tags) {
+        if (options[Constants.INCLUDE_TAGS_COMMAND] && reflection.comment.tags) {
             comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);            
         }
 
-        if (reflection.parameters) {
+        if (options[Constants.INCLUDE_PARAMS_COMMAND] && reflection.parameters) {
             comment[Constants.COMMENT] = Object.assign(this.getParamsComments(reflection), comment[Constants.COMMENT]);
         }
 

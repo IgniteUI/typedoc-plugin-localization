@@ -20,14 +20,16 @@ export class OptComponent extends OptionsComponent {
         }
 
         const includeTagsOption: DeclarationOption = {
-            name: Constants.TAGS_INCLUDE_COMMAND,
+            name: Constants.INCLUDE_TAGS_COMMAND,
             help: 'Specify whether to include tags per comment.',
+            type: ParameterType.Boolean,
             defaultValue: true
         }        
 
         const includeParamsOption: DeclarationOption = {
-            name: Constants.PARAMS_INCLUDE_COMMAND,
+            name: Constants.INCLUDE_PARAMS_COMMAND,
             help: 'Specify whether to include params per comment.',
+            type: ParameterType.Boolean,
             defaultValue: true
         }
 
