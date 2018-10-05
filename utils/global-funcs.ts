@@ -1,7 +1,7 @@
 export class GlobalFuncs {
     public static getOptionValue(options, key) {
         const indx = options.findIndex((e) => e === `--${key}`);
-        if (indx >= options.length - 1) {
+        if (indx >= options.length - 1 || indx < 0) {
             return;
         }
     

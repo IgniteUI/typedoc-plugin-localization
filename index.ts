@@ -49,6 +49,11 @@ module.exports = (PluginHost: Application) => {
 function registerHardcodedTemplateStrings(options) {
     const shellStringsFilePath = GlobalFuncs.getOptionValue(options, Constants.TEMPLATE_STRINGS_OPTION);
     const local = GlobalFuncs.getOptionValue(options, Constants.LOCALIZE_OPTION);
+
+    if (!shellStringsFilePath || !local) {
+        return;
+    }
+
     const templateStrings = fs.readJsonSync(shellStringsFilePath);
     
     HardcodedStrings.setLocal(local);
