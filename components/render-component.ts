@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { name as projName} from '../package.json';
+import * as fs from 'fs-extra';
 
 import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
@@ -8,6 +9,8 @@ import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
+import { GlobalFuncs } from '../utils/global-funcs';
+import { HardcodedStrings } from '../utils/template-strings';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
@@ -62,6 +65,12 @@ export class RenderComponenet extends RendererComponent {
                     if (this.data) {
                         this.updateComment(reflection, this.data[reflection.name]);
                     }
+
+                    if (reflection.groups) {
+                        this.replaceGroupsTitle(reflection.groups);
+                    }
+
+                    this.updateReflectionAbbreviation(reflection);
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
@@ -99,6 +108,23 @@ export class RenderComponenet extends RendererComponent {
             default:
                 return;
         }
+    }
+
+    private updateReflectionAbbreviation(reflection) {
+        reflection.kindString = this.getLocaleValue(reflection.kindString);
+    }
+
+    private replaceGroupsTitle(groups) {
+        groups.forEach(element => {
+            element.title = this.getLocaleValue(element.title);
+        });
+    }
+
+    private getLocaleValue(value) {
+        return GlobalFuncs.getKeyValuePairRes(
+            HardcodedStrings.getTemplateStrings(), 
+            HardcodedStrings.getLocal(), 
+            value);
     }
 
     private getAttribute(parentName, attribute) {
