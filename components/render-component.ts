@@ -1,6 +1,4 @@
 import * as path from 'path';
-import { name as projName} from '../package.json';
-import * as fs from 'fs-extra';
 
 import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
@@ -30,8 +28,6 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private onRenderBegin(event) {
-        this.registerHelpers();
-
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
         const localizeOpt = options[Constants.RENDER_OPTION];
@@ -172,22 +168,5 @@ export class RenderComponenet extends RendererComponent {
         }
 
         return reflection.parent;
-    }
-
-    private registerHelpers() {
-        let module;
-        try {
-            module = require.resolve(projName);
-        } catch(e) {
-            this.application.logger.error(e.message);
-            return;
-        }
-
-        const pluginDist = path.dirname(require.resolve(module));
-        if (pluginDist) {
-            this.owner.theme.resources.deactivate();
-            this.owner.theme.resources.helpers.addOrigin('custom-helpers', `${pluginDist}\\utils\\helpers`);
-            this.owner.theme.resources.activate();
-        }
     }
 }

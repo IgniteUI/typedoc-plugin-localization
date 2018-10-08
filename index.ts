@@ -8,6 +8,7 @@ import { OptComponent } from './components/options-component';
 import { Constants } from './utils/constants';
 import { GlobalFuncs } from './utils/global-funcs';
 import { HardcodedStrings } from './utils/template-strings';
+import { ThemeComponent } from './components/theme-component';
 
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner; 
@@ -40,10 +41,11 @@ module.exports = (PluginHost: Application) => {
     }
 
     if (startRenderer) {
-        registerHardcodedTemplateStrings(processArgs);
         app.renderer.addComponent('render-component', RenderComponenet);
     }
-
+    
+    app.renderer.addComponent('theme-component', ThemeComponent);
+    registerHardcodedTemplateStrings(processArgs);
 }
 
 function registerHardcodedTemplateStrings(options) {
