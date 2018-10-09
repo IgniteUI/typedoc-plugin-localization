@@ -1,10 +1,14 @@
 import * as process from 'process';
+import * as fs from 'fs-extra';
 
 import { Application } from 'typedoc/dist/lib/application'
 import { ConvertComponent } from './components/convert-component';
 import { RenderComponenet } from './components/render-component';
 import { OptComponent } from './components/options-component';
 import { Constants } from './utils/constants';
+import { GlobalFuncs } from './utils/global-funcs';
+import { HardcodedStrings } from './utils/template-strings';
+import { ThemeComponent } from './components/theme-component';
 
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner; 
@@ -36,8 +40,24 @@ module.exports = (PluginHost: Application) => {
         app.converter.addComponent('convert-component', ConvertComponent);
     }
 
-    if (startRenderer) { 
+    if (startRenderer) {
         app.renderer.addComponent('render-component', RenderComponenet);
     }
+    
+    app.renderer.addComponent('theme-component', ThemeComponent);
+    registerHardcodedTemplateStrings(processArgs);
+}
 
+function registerHardcodedTemplateStrings(options) {
+    const shellStringsFilePath = GlobalFuncs.getOptionValue(options, Constants.TEMPLATE_STRINGS_OPTION);
+    const local = GlobalFuncs.getOptionValue(options, Constants.LOCALIZE_OPTION);
+
+    if (!shellStringsFilePath || !local) {
+        return;
+    }
+
+    const templateStrings = fs.readJsonSync(shellStringsFilePath);
+    
+    HardcodedStrings.setLocal(local);
+    HardcodedStrings.setTemplateStrings(templateStrings);
 }

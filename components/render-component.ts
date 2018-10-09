@@ -1,5 +1,4 @@
 import * as path from 'path';
-import { name as projName} from '../package.json';
 
 import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
@@ -8,6 +7,8 @@ import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
+import { GlobalFuncs } from '../utils/global-funcs';
+import { HardcodedStrings } from '../utils/template-strings';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
@@ -27,8 +28,6 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private onRenderBegin(event) {
-        this.registerHelpers();
-
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
         const localizeOpt = options[Constants.RENDER_OPTION];
@@ -62,6 +61,12 @@ export class RenderComponenet extends RendererComponent {
                     if (this.data) {
                         this.updateComment(reflection, this.data[reflection.name]);
                     }
+
+                    if (reflection.groups) {
+                        this.replaceGroupsTitle(reflection.groups);
+                    }
+
+                    this.updateReflectionAbbreviation(reflection);
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
@@ -99,6 +104,23 @@ export class RenderComponenet extends RendererComponent {
             default:
                 return;
         }
+    }
+
+    private updateReflectionAbbreviation(reflection) {
+        reflection.kindString = this.getLocaleValue(reflection.kindString);
+    }
+
+    private replaceGroupsTitle(groups) {
+        groups.forEach(element => {
+            element.title = this.getLocaleValue(element.title);
+        });
+    }
+
+    private getLocaleValue(value) {
+        return GlobalFuncs.getKeyValuePairRes(
+            HardcodedStrings.getTemplateStrings(), 
+            HardcodedStrings.getLocal(), 
+            value);
     }
 
     private getAttribute(parentName, attribute) {
@@ -146,22 +168,5 @@ export class RenderComponenet extends RendererComponent {
         }
 
         return reflection.parent;
-    }
-
-    private registerHelpers() {
-        let module;
-        try {
-            module = require.resolve(projName);
-        } catch(e) {
-            this.application.logger.error(e.message);
-            return;
-        }
-
-        const pluginDist = path.dirname(require.resolve(module));
-        if (pluginDist) {
-            this.owner.theme.resources.deactivate();
-            this.owner.theme.resources.helpers.addOrigin('custom-helpers', `${pluginDist}\\utils\\helpers`);
-            this.owner.theme.resources.activate();
-        }
     }
 }

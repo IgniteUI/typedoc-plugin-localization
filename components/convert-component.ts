@@ -27,6 +27,7 @@ export class ConvertComponent extends ConverterComponent {
             [Converter.EVENT_RESOLVE]: this.resolve,
             [Converter.EVENT_RESOLVE_BEGIN]: this.onResolveBegin,
             [Converter.EVENT_RESOLVE_END]: this.onResolveEnd,
+            [Converter.EVENT_END]: this.onEnd,
             [Converter.EVENT_BEGIN]: this.onBegin
         });
 
@@ -43,9 +44,9 @@ export class ConvertComponent extends ConverterComponent {
         }
     }
 
-    // private onEnd(...rest) {
-    //     // process.exit(0);
-    // }
+    private onEnd() {
+        process.exit(0);
+    }
 
     private onResolveBegin(context) {
         const files = context.project.files;
