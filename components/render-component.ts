@@ -1,8 +1,10 @@
-import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
 import * as path from 'path';
+import { name as projName} from '../package.json';
+
+import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
 import { FileOperations } from '../utils/file-operations';
-import { AttributeType } from '../utils/enums/json-obj-kind';
+import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
@@ -17,18 +19,19 @@ export class RenderComponenet extends RendererComponent {
 
     public initialize() {
         this.listenTo(this.owner, {
-            [RendererEvent.BEGIN]: this.onRenderBegin,
+            [RendererEvent.BEGIN]: this.onRenderBegin
         });
         
         this.fileOperations = new FileOperations(this.application.logger);
         this.parser = new Parser();
     }
 
-    private onRenderBegin(event: RendererEvent) {
-        
+    private onRenderBegin(event) {
+        this.registerHelpers();
+
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
-        const localizeOpt = options[Constants.RENDER_COMMAND];
+        const localizeOpt = options[Constants.RENDER_OPTION];
         if (localizeOpt) {
             this.mainDirOfJsons = localizeOpt;
             this.globalFuncsData = this.fileOperations.getFileData(this.mainDirOfJsons, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
@@ -143,5 +146,22 @@ export class RenderComponenet extends RendererComponent {
         }
 
         return reflection.parent;
+    }
+
+    private registerHelpers() {
+        let module;
+        try {
+            module = require.resolve(projName);
+        } catch(e) {
+            this.application.logger.error(e.message);
+            return;
+        }
+
+        const pluginDist = path.dirname(require.resolve(module));
+        if (pluginDist) {
+            this.owner.theme.resources.deactivate();
+            this.owner.theme.resources.helpers.addOrigin('custom-helpers', `${pluginDist}\\utils\\helpers`);
+            this.owner.theme.resources.activate();
+        }
     }
 }

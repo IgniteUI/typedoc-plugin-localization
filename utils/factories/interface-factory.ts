@@ -1,4 +1,4 @@
-import { AttributeType } from "../enums/json-obj-kind";
+import { AttributeType } from "../enums/json-keys";
 import { BaseFactory } from "./base-factory";
 
 const PROPERTIES_KEY = AttributeType[AttributeType.properties];

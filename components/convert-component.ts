@@ -1,5 +1,4 @@
-import * as process from 'process';
-
+// import * as process from 'process';
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
 import { Converter } from 'typedoc/dist/lib/converter';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
@@ -11,7 +10,7 @@ import { Parser } from '../utils/parser';
 import { Constants } from '../utils/constants';
 import { InterfaceFactory } from '../utils/factories/interface-factory';
 import { FunctionFactory } from '../utils/factories/function-factory';
-
+  
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
     jsonObjectName: string;
@@ -28,7 +27,6 @@ export class ConvertComponent extends ConverterComponent {
             [Converter.EVENT_RESOLVE]: this.resolve,
             [Converter.EVENT_RESOLVE_BEGIN]: this.onResolveBegin,
             [Converter.EVENT_RESOLVE_END]: this.onResolveEnd,
-            [Converter.EVENT_END]: this.onEnd,
             [Converter.EVENT_BEGIN]: this.onBegin
         });
 
@@ -36,18 +34,18 @@ export class ConvertComponent extends ConverterComponent {
         this.fileOperations = new FileOperations(this.application.logger);
     }
 
-    private onBegin(...rest) {
+    private onBegin() {
         const options = this.application.options.getRawValues();
-        this.mainDirToExport = options[Constants.CONVERT_COMMAND];
+        this.mainDirToExport = options[Constants.CONVERT_OPTION];
 
         if(!this.fileOperations.ifDirectoryExists(this.mainDirToExport)) {
             this.fileOperations.createDir(this.mainDirToExport);
         }
     }
 
-    private onEnd(...rest) {
-        process.exit(0);
-    }
+    // private onEnd(...rest) {
+    //     // process.exit(0);
+    // }
 
     private onResolveBegin(context) {
         const files = context.project.files;
@@ -130,11 +128,11 @@ export class ConvertComponent extends ConverterComponent {
 
         let comment = this.getCommentData(reflection.comment);
 
-        if (options[Constants.INCLUDE_TAGS_COMMAND] && reflection.comment.tags) {
+        if (options[Constants.INCLUDE_TAGS_OPTION] && reflection.comment.tags) {
             comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);            
         }
 
-        if (options[Constants.INCLUDE_PARAMS_COMMAND] && reflection.parameters) {
+        if (options[Constants.INCLUDE_PARAMS_OPTION] && reflection.parameters) {
             comment[Constants.COMMENT] = Object.assign(this.getParamsComments(reflection), comment[Constants.COMMENT]);
         }
 

@@ -1,13 +1,13 @@
+import * as process from 'process';
+
 import { Application } from 'typedoc/dist/lib/application'
 import { ConvertComponent } from './components/convert-component';
 import { RenderComponenet } from './components/render-component';
 import { OptComponent } from './components/options-component';
-import * as process from 'process';
 import { Constants } from './utils/constants';
 
-
 module.exports = (PluginHost: Application) => {
-    const app = PluginHost.owner;
+    const app = PluginHost.owner; 
 
     app.options.addComponent('options-component', OptComponent);
 
@@ -16,13 +16,13 @@ module.exports = (PluginHost: Application) => {
 
     const processArgs = process.argv;
     processArgs.forEach(command => {
-        if (command.indexOf(Constants.CONVERT_COMMAND) >= 0 ||
-            command.indexOf(Constants.SHORT_CONVERT_COMMAND) >= 0) {
+        if (command.indexOf(Constants.CONVERT_OPTION) >= 0 ||
+            command.indexOf(Constants.SHORT_CONVERT_OPTION) >= 0) {
                 startConverter = true;
         }
 
-        if (command.indexOf(Constants.RENDER_COMMAND) >= 0 ||
-            command.indexOf(Constants.SHORT_RENDER_COMMAND) >= 0) {
+        if (command.indexOf(Constants.RENDER_OPTION) >= 0 ||
+            command.indexOf(Constants.SHORT_RENDER_OPTION) >= 0) {
                 startRenderer = true;
         }
     });
@@ -37,7 +37,7 @@ module.exports = (PluginHost: Application) => {
     }
 
     if (startRenderer) { 
-        app.renderer.addComponent('render-component', RenderComponenet)
+        app.renderer.addComponent('render-component', RenderComponenet);
     }
-}
 
+}
