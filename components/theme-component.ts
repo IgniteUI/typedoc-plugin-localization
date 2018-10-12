@@ -1,9 +1,9 @@
-import { name as projName} from '../package.json';
 import * as path from 'path';
 
 import { RendererEvent } from "typedoc/dist/lib/output/events";
 import { Component } from 'typedoc/dist/lib/utils';
 import { RendererComponent } from 'typedoc/dist/lib/output/components';
+import { Constants } from '../utils/constants';
 
 @Component({ name: 'theme-component' })
 export class ThemeComponent extends RendererComponent {
@@ -20,7 +20,7 @@ export class ThemeComponent extends RendererComponent {
     private registerHelpers() {
         let module;
         try {
-            module = require.resolve(projName);
+            module = require.resolve(Constants.PROJ_NAME);
         } catch(e) {
             this.application.logger.error(e.message);
             return;

@@ -1,5 +1,6 @@
 export class Constants {
-    // static readonly PLU
+    static readonly PROJ_NAME = 'typedoc-plugin-localization';
+
     // JSON keys
     static readonly PARAMS = 'parameters';
     static readonly TAGS = 'tags';
