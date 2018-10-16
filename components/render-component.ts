@@ -61,12 +61,6 @@ export class RenderComponenet extends RendererComponent {
                     if (this.data) {
                         this.updateComment(reflection, this.data[reflection.name]);
                     }
-
-                    if (reflection.groups) {
-                        this.replaceGroupsTitle(reflection.groups);
-                    }
-
-                    this.updateReflectionAbbreviation(reflection);
                 break;
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
@@ -104,23 +98,6 @@ export class RenderComponenet extends RendererComponent {
             default:
                 return;
         }
-    }
-
-    private updateReflectionAbbreviation(reflection) {
-        reflection.kindString = this.getLocaleValue(reflection.kindString);
-    }
-
-    private replaceGroupsTitle(groups) {
-        groups.forEach(element => {
-            element.title = this.getLocaleValue(element.title);
-        });
-    }
-
-    private getLocaleValue(value) {
-        return GlobalFuncs.getKeyValuePairRes(
-            HardcodedStrings.getTemplateStrings(), 
-            HardcodedStrings.getLocal(), 
-            value);
     }
 
     private getAttribute(parentName, attribute) {
