@@ -1,7 +1,9 @@
 export class Constants {
     static readonly PROJ_NAME = 'typedoc-plugin-localization';
 
-    // JSON keys
+    /**
+     * JSON keys
+     */
     static readonly PARAMS = 'parameters';
     static readonly TAGS = 'tags';
     static readonly TAG_NAME = 'tagName';
@@ -9,7 +11,9 @@ export class Constants {
     static readonly TEXT = 'text';
     static readonly SHORT_TEXT = 'shortText';
 
-    // Options
+    /**
+     * Options
+     */
     static readonly CONVERT_OPTION = 'generate-json';
     static readonly RENDER_OPTION = 'generate-from-json';
     static readonly SHORT_CONVERT_OPTION = 'gen-json';

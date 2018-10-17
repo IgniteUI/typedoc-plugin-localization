@@ -13,9 +13,21 @@ import { HardcodedStrings } from '../utils/template-strings';
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
     fileOperations: FileOperations;
+    /**
+     * Contains data per every processed Object like (Class, Inteface, Enum) 
+     */
     data: JSON;
+    /**
+     * Main process dir.
+     */
     mainDirOfJsons: string;
+    /**
+     * JSON data for all global funcs definitions.
+     */
     globalFuncsData;
+    /**
+     * String parser
+     */
     parser: Parser;
 
     public initialize() {
@@ -65,6 +77,10 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
+                   /**
+                     * Skip reflections with type @ReflectionKind.Function because they are aslo @ReflectionKInd.CallSignature
+                     * but the handling process here is not appropriate for them.
+                     */
                     if (reflection.parent === ReflectionKind.Function) {
                         break;
                     }
@@ -137,6 +153,11 @@ export class RenderComponenet extends RendererComponent {
         }
     }
 
+    /**
+     * Returns the parent(Class, Interface, Enum) per every Method, Property, Getter, Setter etc.
+     * @param reflection 
+     * @param kind 
+     */
     private getParentBasedOnType(reflection, kind) {
         if (kind === ReflectionKind.CallSignature || 
             kind === ReflectionKind.GetSignature || 

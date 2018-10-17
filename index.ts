@@ -13,12 +13,19 @@ import { ThemeComponent } from './components/theme-component';
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner; 
 
+    /**
+     * Add Options register Component.
+     */
     app.options.addComponent('options-component', OptComponent);
 
     let startConverter = false; 
     let startRenderer = false;
 
     const processArgs = process.argv;
+    /**
+     * Determines it it is necessary to run Conversion or Render process based on the 
+     * Command line arguments(Options).
+     */
     processArgs.forEach(command => {
         if (command.indexOf(Constants.CONVERT_OPTION) >= 0 ||
             command.indexOf(Constants.SHORT_CONVERT_OPTION) >= 0) {
@@ -34,23 +41,36 @@ module.exports = (PluginHost: Application) => {
     if (startConverter) {
         /**
          * We set the 'default' value of 'out' option because this option is checked before the converter has been started. 
-         * As we kill the process after the convertion of the json's we or not interested in the value of the option.
+         * As we kill the process after the convertion of the json's we or not interested in the value of the 'out' option.
          */
         app.options.setValue('out', 'defult');
+
+        /**
+         * Register component responsible for the convertion.
+         */
         app.converter.addComponent('convert-component', ConvertComponent);
     }
 
     if (startRenderer) {
+        /**
+         * Register component responsible for the Renderer.
+         */
         app.renderer.addComponent('render-component', RenderComponenet);
     }
     
+    /**
+     * Register theme component.
+     */
     app.renderer.addComponent('theme-component', ThemeComponent);
     registerHardcodedTemplateStrings(processArgs);
 }
 
+/**
+ * Build the Cache containing all localized template strings.
+ */
 function registerHardcodedTemplateStrings(options) {
-    const shellStringsFilePath = GlobalFuncs.getOptionValue(options, Constants.TEMPLATE_STRINGS_OPTION);
-    const local = GlobalFuncs.getOptionValue(options, Constants.LOCALIZE_OPTION);
+    const shellStringsFilePath = GlobalFuncs.getCmdLineArgumentValue(options, Constants.TEMPLATE_STRINGS_OPTION);
+    const local = GlobalFuncs.getCmdLineArgumentValue(options, Constants.LOCALIZE_OPTION);
 
     if (!shellStringsFilePath || !local) {
         return;

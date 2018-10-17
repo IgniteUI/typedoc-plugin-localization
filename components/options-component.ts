@@ -43,6 +43,9 @@ export class OptComponent extends OptionsComponent {
             help: 'Path to the json file which contains your localized template strings'
         }
 
+        /**
+         * Custom options registration
+         */
         this.application.options.addDeclarations([
             generateToOption, 
             generateFromOption, 

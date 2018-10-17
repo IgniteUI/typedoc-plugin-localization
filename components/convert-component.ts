@@ -1,4 +1,3 @@
-// import * as process from 'process';
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
 import { Converter } from 'typedoc/dist/lib/converter';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
@@ -13,12 +12,27 @@ import { FunctionFactory } from '../utils/factories/function-factory';
   
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
+    /**
+     * Contains current name per every Class, Interface, Enum.
+     */
     jsonObjectName: string;
+    /**
+     * Contains current Object instance.
+     */
     factoryInstance: BaseFactory;
     fileOperations: FileOperations;
+    /**
+     * Current @Reflection instance.
+     */
     reflection;
     parser: Parser;
+    /**
+     * Main process dir
+     */
     mainDirToExport: string;
+    /**
+     * Global functions data.
+     */
     globalFuncsJson = {};
 
     public initialize() {
@@ -35,8 +49,17 @@ export class ConvertComponent extends ConverterComponent {
         this.fileOperations = new FileOperations(this.application.logger);
     }
 
+    /**
+     * Executes when the file convertion begins.
+     */
     private onBegin() {
+        /**
+         * Command line arguments
+         */
         const options = this.application.options.getRawValues();
+        /**
+         * Get json's directory. Where json files should be exported.
+         */
         this.mainDirToExport = options[Constants.CONVERT_OPTION];
 
         if(!this.fileOperations.ifDirectoryExists(this.mainDirToExport)) {
@@ -44,28 +67,47 @@ export class ConvertComponent extends ConverterComponent {
         }
     }
 
+    /**
+     * Execute when the convertion of the files end.
+     */
     private onEnd() {
+        /**
+         * Stop the process after all json's are created.
+         * 
+         * It isn't necessary to continue execution because json's have to be translated first
+         * then execute the generation of the documentation.
+         */
         process.exit(0);
     }
 
+
     private onResolveBegin(context) {
         const files = context.project.files;
+        /**
+         * Creates the directory structure of the json's generetion.
+         */
         this.fileOperations.prepareOutputDirectory(this.mainDirToExport, files);
         /**
-         * Create main file for all global functions.
+         * Create main file which would contains all global functions.
          */
         this.fileOperations.createFile(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
     }
 
     private onResolveEnd(...rest) {
-        // Add the last resolved object
+        /**
+         * Write the last built json file.
+         * 
+         * It happens here because we are unable to track into the 
+         * @reslove handler when exactly the execution stops.
+         * And we know for sure that the last step before stropping the conversion is here.
+         */
         if (this.factoryInstance && !this.factoryInstance.isEmpty()) {
             const filePath = this.reflection.sources[0].fileName;
             this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
         }
 
         /**
-         * Add all global functions into the file which corresponds for them file; 
+         * Write all collected data for all global functions into corresponding file. 
          */ 
         const funcObjKeys = Object.keys(this.globalFuncsJson);
         if (funcObjKeys.length) {
@@ -73,11 +115,20 @@ export class ConvertComponent extends ConverterComponent {
         }
     }
 
+    /**
+     * Triggers per every reflection object.
+     * @param context 
+     * @param reflection 
+     */
     private resolve(context, reflection) {
         switch(reflection.kind) {
             case ReflectionKind.Enum:
             case ReflectionKind.Class:
             case ReflectionKind.Interface:
+                /**
+                 * Writes file content when the resolve process for to Object ends 
+                 * per(Class, Enum, Interface).
+                 */
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factoryInstance.isEmpty()) {
                         const filePath = this.reflection.sources[0].fileName
@@ -94,6 +145,10 @@ export class ConvertComponent extends ConverterComponent {
             case ReflectionKind.Property:
             case ReflectionKind.CallSignature:
             case ReflectionKind.EnumMember:
+                /**
+                 * Skip reflections with type @ReflectionKind.Function because they are aslo @ReflectionKInd.CallSignature
+                 * but the handling process here is not appropriate for them.
+                 */
                 if (reflection.parent.kind === ReflectionKind.Function) {
                     break;
                 }
@@ -120,7 +175,10 @@ export class ConvertComponent extends ConverterComponent {
         }
     }
 
-    
+    /**
+     * Returns all comment info including tags and parameters.
+     * @param reflection 
+     */
     private getCommentInfo(reflection) {
         const options = this.application.options.getRawValues();
         if (!reflection.comment) {
@@ -140,6 +198,10 @@ export class ConvertComponent extends ConverterComponent {
         return comment;
     }
 
+    /**
+     * Returns all parameters per comment.
+     * @param reflection 
+     */
     private getParamsComments(reflection) {
         let params = {};
         params[Constants.PARAMS] = {};
@@ -158,6 +220,10 @@ export class ConvertComponent extends ConverterComponent {
         return Object.keys(params[Constants.PARAMS]).length ? params : {};
     }
 
+    /**
+     * Returns all tags per comment.
+     * @param comment 
+     */
     private getTagsComments(comment) {
         let tags = {};
         tags[Constants.TAGS] = {};
@@ -171,6 +237,10 @@ export class ConvertComponent extends ConverterComponent {
         return tags;
     }
 
+    /**
+     * Returns comment content.
+     * @param obj 
+     */
     private getCommentData(obj) {
         const comment = {};
         comment[Constants.COMMENT] = {};
@@ -194,6 +264,11 @@ export class ConvertComponent extends ConverterComponent {
         return comment;
     }
 
+    /**
+     * Builds a instance depending on the Object type.
+     * @param objectType 
+     * @param objectName 
+     */
     private instanceBuilder(objectType, objectName): BaseFactory {
         switch(objectType) {
             case ReflectionKind.Enum:

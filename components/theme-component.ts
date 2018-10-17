@@ -30,6 +30,11 @@ export class ThemeComponent extends RendererComponent {
         })
     }
 
+    /**
+     * Triggers localizaiton of template groups(Accessors, Constructor, Methods, Properties, etc.) 
+     * and Object abbreviations(Class, Interface, Enum).
+     * @param reflection 
+     */
     private updateTemplateRepresentations(reflection) {
         if (reflection.kind === ReflectionKind.Class ||
             reflection.kind === ReflectionKind.Enum ||
@@ -42,16 +47,28 @@ export class ThemeComponent extends RendererComponent {
             }
     }
 
+    /**
+     * Localize Object abbreviatons(Class, Interface, Enum)
+     * @param reflection 
+     */
     private updateReflectionAbbreviation(reflection) {
         reflection.kindString = this.getLocaleValue(reflection.kindString);
     }
 
+    /**
+     * Localize template groups like (Accessors, Methods, Properties, etc.)
+     * @param groups 
+     */
     private replaceGroupsTitle(groups) {
         groups.forEach(element => {
             element.title = this.getLocaleValue(element.title);
         });
     }
 
+    /**
+     * Get template localized string from cached translations.
+     * @param value 
+     */
     private getLocaleValue(value) {
         return GlobalFuncs.getKeyValuePairRes(
             HardcodedStrings.getTemplateStrings(), 
@@ -59,6 +76,10 @@ export class ThemeComponent extends RendererComponent {
             value);
     }
 
+    /**
+     * Register helper function responsible
+     * for hardcoded template strings localization.
+     */
     private registerHelpers() {
         let module;
         try {

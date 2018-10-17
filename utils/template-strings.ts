@@ -1,3 +1,6 @@
+/**
+ * Cache of all localized hardcoded template strings values.
+ */
 export class HardcodedStrings {
     private static local: string;
     private static templateStrings: string;
