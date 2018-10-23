@@ -35,13 +35,13 @@ npm install typedoc-plugin-localization --save-dev
 #### Arguments
 
 * `--generate-json <path/to/jsons/directory/>`<br>
-  Specifies the location the JSON's should be written to.
+  Specifies the location where the JSON's should be written to.
 * `--generate-from-json <path/to/generated/jsons>`<br>
-  Specifies from where to get the loclized json data.
+  Specifies from where to get the loclized JSON's data.
 * `--templateStrings <path/to/template-strings/json>`<br>
-  Specifies the path to the json file which would contains your localized template strings.
+  Specifies the path to the JSON file which would contains your localized hardcoded template strings. Additional information could be found [here](#additional-information)
 * `--localzie <localizaiton key>`<br>
-  Specifies your localization key which would match the translations section in your templateStrings file.
+  Specifies your localization key which would match the translations section in your templateStrings file. Additional information could be found [here](#additional-information)
 
 #### Path variable descriptions
 `<main-proj-dir>` - This file has to contain the file structure of the project.
