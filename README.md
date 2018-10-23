@@ -1,6 +1,9 @@
 ## typedoc-plugin-localization
 [![Build Status](https://travis-ci.org/IgniteUI/typedoc-plugin-localization.svg?branch=master)](https://travis-ci.org/IgniteUI/typedoc-plugin-localization)
 [![npm version](https://badge.fury.io/js/typedoc-plugin-localization.svg)](https://badge.fury.io/js/typedoc-plugin-localization)
+
+## Inspired by [igniuteiu-angular](https://github.com/IgniteUI/igniteui-angular)
+
 ### Plugin
 
 A plugin for [Typedoc](http://typedoc.org)
