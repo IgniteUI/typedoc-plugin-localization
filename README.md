@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/IgniteUI/typedoc-plugin-localization.svg?branch=master)](https://travis-ci.org/IgniteUI/typedoc-plugin-localization)
 [![npm version](https://badge.fury.io/js/typedoc-plugin-localization.svg)](https://badge.fury.io/js/typedoc-plugin-localization)
 
-## Inspired by [igniteui-angular](https://github.com/IgniteUI/igniteui-angular)
+## Inspired and used by [igniteui-angular](https://github.com/IgniteUI/igniteui-angular)
 
 ### Plugin
 
@@ -146,7 +146,7 @@ Folder `localized` will be automatically created.
 
 #### Additional Information
 
-We have exposed the opportunity to localize your hardcoded template strings. How? </br>
+For your convenience we have exposed a way to localize your hardcoded template strings. How? </br>
 We have registered a helper function within our plugin which brings you the ability to achieve this. How to use it? </br>
 Let's take an example of a `partial view`.
 
@@ -196,12 +196,12 @@ Here we would like to translate "Defined in" hardcoded string. </br>
         </ul>
     ```
 
-3. Execute the translation command which would contains the `localization key` and the `path` to the `template strings` file. </br>
+3. Execute the translation command which would contain the `localization key` and the `path` to the `template strings` file. </br>
     For instance:
     ```
     npx typedoc `<main-proj-dir>` --localize `<localization-key>` --templateStrings <path/to/the/file>`
     ```
-    In the case of the [igniteui-angular](https://github.com/IgniteUI/igniteui-angular) it would be:
+    In case of [igniteui-angular](https://github.com/IgniteUI/igniteui-angular) it would be:
     ```
     npx typedoc projects\igniteui-angular\src\ --localize jp --templateStrings ./extras/template/strings/shell-strings.json
     ```
