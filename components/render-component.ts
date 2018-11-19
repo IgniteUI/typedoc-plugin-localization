@@ -32,7 +32,7 @@ export class RenderComponenet extends RendererComponent {
 
     public initialize() {
         this.listenTo(this.owner, {
-            [RendererEvent.BEGIN]: this.onRenderBegin
+            [RendererEvent.BEGIN]: this.onRenderBegin,
         });
         
         this.fileOperations = new FileOperations(this.application.logger);
@@ -40,6 +40,8 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private onRenderBegin(event) {
+        event.project.localization = this.application.options.getValue("localize");
+
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
         const localizeOpt = options[Constants.RENDER_OPTION];
