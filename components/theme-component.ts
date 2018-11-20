@@ -92,7 +92,7 @@ export class ThemeComponent extends RendererComponent {
         const pluginDist = path.dirname(require.resolve(module));
         if (pluginDist) {
             this.owner.theme.resources.deactivate();
-            this.owner.theme.resources.helpers.addOrigin('custom-helpers', `${pluginDist}\\utils\\helpers`);
+            this.owner.theme.resources.helpers.addOrigin('custom-helpers', path.join(pluginDist, 'utils', 'helpers'));
             this.owner.theme.resources.activate();
         }
     }
