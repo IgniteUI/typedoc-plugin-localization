@@ -91,6 +91,7 @@ export class ConvertComponent extends ConverterComponent {
          * Create main file which would contains all global functions.
          */
         this.fileOperations.createFile(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
+        this.fileOperations.appendFileData(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json', {});
     }
 
     private onResolveEnd(...rest) {
