@@ -79,7 +79,7 @@ In order to test a pull request that is awaiting test, perform the following act
 
   Replace the `<PULL_ID>` with the respective pull number in the following:
   ```bash
-  git fetch igniteui-angular +refs/pull/<PULL_ID>/merge
+  git fetch typedoc-plugin-localization +refs/pull/<PULL_ID>/merge
   git checkout -qf FETCH_HEAD
   ```
 4. Verify that the expected behavior is observed with the changes in the pull request.
