@@ -144,14 +144,33 @@ export class RenderComponenet extends RendererComponent {
         }
 
         let parsed;
-        if(reflection.comment.text) {
+        if (reflection.comment.text) {
             parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.TEXT], '\n');
             reflection.comment.text = parsed;
         }
 
-        if(reflection.comment.shortText) {
+        if (reflection.comment.shortText) {
             parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.SHORT_TEXT], '\n');
             reflection.comment.shortText = parsed;
+        }
+
+        if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
+            reflection.comment.tags.forEach(tag => {
+                const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
+                tag.tagName = tagFromJson[Constants.COMMENT].tagName;
+                tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
+                return tag;
+            });
+        }
+
+        if (reflection.parameters && dataObj[Constants.COMMENT][Constants.PARAMS]) {
+            reflection.parameters.forEach(param => {
+                const paramFromJson = dataObj[Constants.COMMENT][Constants.PARAMS][param.name];
+                if (paramFromJson) {
+                    param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
+                    return param;
+                }
+            });
         }
     }
 
