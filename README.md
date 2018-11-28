@@ -33,7 +33,6 @@ npm install typedoc-plugin-localization --save-dev
 > The plugin works with [typedoc](https://github.com/TypeStrong/typedoc) version@0.13.0 and above.
 
 #### Arguments
-
 * `--generate-json <path/to/jsons/directory/>`<br>
   Specifies the location where the JSON's should be written to.
 * `--generate-from-json <path/to/generated/jsons>`<br>
@@ -42,6 +41,11 @@ npm install typedoc-plugin-localization --save-dev
   Specifies the path to the JSON file which would contains your localized hardcoded template strings. Additional information could be found [here](#additional-information)
 * `--localzie <localizaiton key>`<br>
   Specifies your localization key which would match the translations section in your templateStrings file. Additional information could be found [here](#additional-information)
+* `--tags`<br>
+  Include all commented tags into json exports. For instance /* @memberof Class */
+* `--params`<br>
+  Include all commented parameters into json exports. For instace /* @param option Options describing your settings.  */
+
 
 #### Path variable descriptions
 `<main-proj-dir>` - This file has to contain the file structure of the project.
@@ -110,6 +114,47 @@ After the export of the JSON files finished, you should modify the comments in t
                 }
             },
         ....
+        },
+        "methods": {
+            "findNext": {
+                "comment": {
+                    "parameters": {
+                        "text": {
+                            "comment": {
+                                "text": "the string to search."
+                            }
+                        },
+                        "caseSensitive": {
+                            "comment": {
+                                "text": "optionally, if the search should be case sensitive (defaults to false)."
+                            }
+                        },
+                        "exactMatch": {
+                            "comment": {
+                                "text": "optionally, if the text should match the entire value  (defaults to false)."
+                            }
+                        }
+                    },
+                    "tags": {
+                        "memberof": {
+                            "comment": {
+                                "text": "IgxGridBaseComponent",
+                                "tagName": "memberof"
+                            }
+                        }
+                    },
+                    "shortText": [
+                        "Finds the next occurrence of a given string in the grid and scrolls to the cell if it isn't visible.",
+                        "Returns how many times the grid contains the string.",
+                        "```typescript",
+                        "this.grid.findNext(\"financial\");",
+                        "```"
+                    ]
+                }
+            }
+        ....
+        }
+    ....
 ```
 
 The structure of every file has the following representation:
