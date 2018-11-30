@@ -7,8 +7,6 @@ import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
-import { GlobalFuncs } from '../utils/global-funcs';
-import { HardcodedStrings } from '../utils/template-strings';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
