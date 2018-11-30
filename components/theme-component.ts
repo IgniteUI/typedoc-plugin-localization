@@ -44,7 +44,13 @@ export class ThemeComponent extends RendererComponent {
                 }
 
                 this.updateReflectionAbbreviation(reflection);
-            }
+        }
+
+        if (reflection.parameters && reflection.parameters.length) {
+            reflection.parameters.forEach(e => {
+                this.replaceParameterFlags(e);
+            });
+        }
     }
 
     /**
@@ -63,6 +69,14 @@ export class ThemeComponent extends RendererComponent {
         groups.forEach(element => {
             element.title = this.getLocaleValue(element.title);
         });
+    }
+
+    private replaceParameterFlags(param) {
+        if (param.flags && param.flags.length) {
+            param.flags.forEach((f, idx) => {
+                param.flags[idx] = this.getLocaleValue(f);
+            });
+        }
     }
 
     /**

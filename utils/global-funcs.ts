@@ -9,11 +9,7 @@ export class GlobalFuncs {
     }
 
     public static getKeyValuePairRes(data, key, value) {
-        if (!data) {
-            return value;
-        }
-
-        if (!data[key]) {
+        if (!data && !data[key]) {
             return value;
         }
         
