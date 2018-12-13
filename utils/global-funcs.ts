@@ -9,11 +9,11 @@ export class GlobalFuncs {
     }
 
     public static getKeyValuePairRes(data, key, value) {
-        if (!data && !data[key]) {
-            return value;
+        if (!!data && !!data[key]) {
+            const res = data[key][value];
+            return res ? res : value;
         }
         
-        const res = data[key][value];
-        return res ? res : value;
+        return value;
     }   
 }
