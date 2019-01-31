@@ -39,7 +39,7 @@ npm install typedoc-plugin-localization --save-dev
   Specifies from where to get the loclized JSON's data.
 * `--templateStrings <path/to/template-strings/json>`<br>
   Specifies the path to the JSON file which would contains your localized hardcoded template strings. Additional information could be found [here](#additional-information)
-* `--localzie <localizaiton key>`<br>
+* `--localize <localizaiton key>`<br>
   Specifies your localization key which would match the translations section in your templateStrings file. Additional information could be found [here](#additional-information)
 * `--tags`<br>
   Include all commented tags into json exports. For instance /* @memberof Class */
