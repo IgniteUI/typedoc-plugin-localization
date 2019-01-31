@@ -23,20 +23,22 @@ export class FileOperations {
 
     public ifDirectoryExists(dirName) {
         if (fs.existsSync(dirName)) {
-            if(!fs.statSync(dirName).isDirectory) {
+            if(!fs.statSync(dirName).isDirectory()) {
                 this.logger.error(`The output target exists ${dirName} but it is not a directory!`)
                 return false;
             }
 
             return true;
         }
+
+        return false;
     }
 
     public ifFileExists(filePath) {
         if(fs.existsSync(filePath)) {
-            if (!fs.statSync(filePath).isFile) {
+            if (!fs.statSync(filePath).isFile()) {
                 this.logger.error(`The ouput targets exists ${path} but it is not a file!`);
-                return true;
+                return false;
             }
             return true;
         }

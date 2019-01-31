@@ -1,7 +1,6 @@
 import { Component } from 'typedoc/dist/lib/output/components'
-import { OptionsComponent, DiscoverEvent } from 'typedoc/dist/lib/utils/options/options'
-import { OptionDeclaration, DeclarationOption, ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
-import { Option } from 'typedoc/dist/lib/utils/component';
+import { OptionsComponent,  } from 'typedoc/dist/lib/utils/options/options'
+import { DeclarationOption, ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
 import { Constants } from '../utils/constants';
 
 @Component({ name: 'options-component' })

@@ -8,7 +8,7 @@ export class GlobalFuncs {
         return options[indx + 1];
     }
 
-    public static getKeyValuePairRes(data, key, value) {
+    public static getKeyValuePairVal(data, key, value) {
         if (!!data && !!data[key]) {
             const res = data[key][value];
             return res ? res : value;

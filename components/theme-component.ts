@@ -84,7 +84,7 @@ export class ThemeComponent extends RendererComponent {
      * @param value 
      */
     private getLocaleValue(value) {
-        return GlobalFuncs.getKeyValuePairRes(
+        return GlobalFuncs.getKeyValuePairVal(
             HardcodedStrings.getTemplateStrings(), 
             HardcodedStrings.getLocal(), 
             value);

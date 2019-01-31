@@ -7,7 +7,7 @@ import { HardcodedStrings } from '../template-strings';
  */
 export function localize(options: any) {
     const value = options.fn(this).trim();    
-    return GlobalFuncs.getKeyValuePairRes(
+    return GlobalFuncs.getKeyValuePairVal(
         HardcodedStrings.getTemplateStrings(), 
         HardcodedStrings.getLocal(), 
         value);
