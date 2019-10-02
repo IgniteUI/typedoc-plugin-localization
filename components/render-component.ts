@@ -137,7 +137,7 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private updateComment(reflection, dataObj) {
-        if (!reflection.comment || !dataObj[Constants.COMMENT]) {
+        if (!reflection.comment || (dataObj && !dataObj[Constants.COMMENT])) {
             return;
         }
 
