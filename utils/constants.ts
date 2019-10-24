@@ -5,6 +5,7 @@ export class Constants {
      * JSON keys
      */
     static readonly PARAMS = 'parameters';
+    static readonly RETURNS = 'returns';
     static readonly TAGS = 'tags';
     static readonly TAG_NAME = 'tagName';
     static readonly COMMENT = 'comment';
