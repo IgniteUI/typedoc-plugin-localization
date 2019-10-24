@@ -152,6 +152,11 @@ export class RenderComponenet extends RendererComponent {
             reflection.comment.shortText = parsed;
         }
 
+        if (reflection.comment.returns) {
+            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.RETURNS], '\n');
+            reflection.comment.returns = parsed;
+        }
+
         if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
             reflection.comment.tags.forEach(tag => {
                 const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
