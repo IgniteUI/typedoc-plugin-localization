@@ -1,32 +1,41 @@
 import * as path from 'path';
 
-import { RendererEvent } from "typedoc/dist/lib/output/events";
+import { RendererEvent, PageEvent } from "typedoc/dist/lib/output/events";
 import { Component } from 'typedoc/dist/lib/utils';
 import { RendererComponent } from 'typedoc/dist/lib/output/components';
 import { Constants } from '../utils/constants';
 import { GlobalFuncs } from '../utils/global-funcs';
 import { HardcodedStrings } from '../utils/template-strings';
 import { ReflectionKind } from 'typedoc/dist/lib/models';
+import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
 
 @Component({ name: 'theme-component' })
 export class ThemeComponent extends RendererComponent {
     initialize() {
         this.listenTo(this.owner, {
-            [RendererEvent.BEGIN]: this.onRenderBegin
+            [RendererEvent.BEGIN]: this.onRenderBegin,
+            [PageEvent.BEGIN]: this.onRenderingBeginPage
         });
     }
 
     private onRenderBegin(event) {
         this.registerHelpers();
-
+        this.localizeGroupTitles(event.project.groups);
         this.run(event.project.reflections);
     }
 
+    private onRenderingBeginPage(event: PageEvent) {
+      const navigationItems: Array<NavigationItem> = event.navigation.children;
+      navigationItems.forEach((item: NavigationItem) => {
+          item.title = this.getLocaleValue(item.title);
+      });
+    }
+    
     private run(reflections) {
         const keys = Object.keys(reflections);
         keys.forEach(key => {
             const reflection = reflections[key];
-            this.updateTemplateRepresentations(reflection)
+            this.localizeReflectionDeffinitions(reflection)
         })
     }
 
@@ -35,20 +44,20 @@ export class ThemeComponent extends RendererComponent {
      * and Object abbreviations(Class, Interface, Enum).
      * @param reflection 
      */
-    private updateTemplateRepresentations(reflection) {
+    private localizeReflectionDeffinitions(reflection) {
         if (reflection.kind === ReflectionKind.Class ||
             reflection.kind === ReflectionKind.Enum ||
             reflection.kind === ReflectionKind.Interface) {        
                 if (reflection.groups) {
-                    this.replaceGroupsTitle(reflection.groups);
+                    this.localizeGroupTitles(reflection.groups);
                 }
 
-                this.updateReflectionAbbreviation(reflection);
+                this.localizeReflectionAbbriviation(reflection);
         }
 
         if (reflection.parameters && reflection.parameters.length) {
             reflection.parameters.forEach(e => {
-                this.replaceParameterFlags(e);
+                this.localizeParameterFlags(e);
             });
         }
     }
@@ -57,7 +66,7 @@ export class ThemeComponent extends RendererComponent {
      * Localize Object abbreviatons(Class, Interface, Enum)
      * @param reflection 
      */
-    private updateReflectionAbbreviation(reflection) {
+    private localizeReflectionAbbriviation(reflection) {
         reflection.kindString = this.getLocaleValue(reflection.kindString);
     }
 
@@ -65,13 +74,13 @@ export class ThemeComponent extends RendererComponent {
      * Localize template groups like (Accessors, Methods, Properties, etc.)
      * @param groups 
      */
-    private replaceGroupsTitle(groups) {
+    private localizeGroupTitles(groups) {
         groups.forEach(element => {
             element.title = this.getLocaleValue(element.title);
         });
     }
 
-    private replaceParameterFlags(param) {
+    private localizeParameterFlags(param) {
         if (param.flags && param.flags.length) {
             param.flags.forEach((f, idx) => {
                 param.flags[idx] = this.getLocaleValue(f);
