@@ -196,7 +196,21 @@ export class ConvertComponent extends ConverterComponent {
             comment[Constants.COMMENT] = Object.assign(this.getParamsComments(reflection), comment[Constants.COMMENT]);
         }
 
+        if (options[Constants.INCLUDE_TAGS_OPTION] && reflection.comment.returns) {
+            comment[Constants.COMMENT] = Object.assign(this.getReturnsComment(reflection), comment[Constants.COMMENT]);
+        }
+
         return comment;
+    }
+
+    /**
+     * Extract the comment from the @return parameter.
+     * @param reflection 
+     */
+    private getReturnsComment(reflection) {
+        let returns = {};
+        returns[Constants.RETURNS] = this.getCommentData(reflection.comment);
+        return returns;
     }
 
     /**
@@ -260,6 +274,10 @@ export class ConvertComponent extends ConverterComponent {
 
         if(obj.tagName) {
             comment[Constants.COMMENT][Constants.TAG_NAME] = obj.tagName;
+        }
+
+        if(obj.returns) {
+            comment[Constants.COMMENT][Constants.RETURNS] = obj.returns;
         }
 
         return comment;
