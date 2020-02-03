@@ -23,10 +23,11 @@
   ],
   "dependencies": {
     "fs-extra": "^7.0.0",
-    "typedoc": "^0.11.1"
+    "typedoc": "^0.16.9"
   },
   "devDependencies": {
-    "typedoc": "^0.11.1",
-    "typescript": "^3.0.1"
+    "@types/node": "^13.5.0",
+    "typedoc": "^0.16.9",
+    "typescript": "^3.7.5"
   }
 }
