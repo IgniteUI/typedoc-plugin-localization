@@ -94,8 +94,8 @@ export class FileOperations {
 
         const parsedPath = path.parse(filePath);
         const splitPath = parsedPath.dir.split('/');
-        const fileStructureDir = splitPath[0];
-        const componentDir = splitPath[1];
+        const fileStructureDir = splitPath[splitPath.length - 2];
+        const componentDir = splitPath[splitPath.length - 1];
         if (fileStructureDir === "" && componentDir === undefined || parsedPath.root) {
             return null;
         } else if (fileStructureDir && componentDir === undefined) {
