@@ -4,11 +4,11 @@ import * as fs from 'fs-extra';
 import { Application } from 'typedoc/dist/lib/application'
 import { ConvertComponent } from './components/convert-component';
 import { RenderComponenet } from './components/render-component';
-import { OptComponent } from './components/options-component';
 import { Constants } from './utils/constants';
 import { GlobalFuncs } from './utils/global-funcs';
 import { HardcodedStrings } from './utils/template-strings';
 import { ThemeComponent } from './components/theme-component';
+import { pluginOptions } from './utils/options';
 
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner; 
@@ -16,7 +16,7 @@ module.exports = (PluginHost: Application) => {
     /**
      * Add Options register Component.
      */
-    app.options.addComponent('options-component', OptComponent);
+    pluginOptions(app.options)
 
     let startConverter = false; 
     let startRenderer = false;
@@ -48,20 +48,20 @@ module.exports = (PluginHost: Application) => {
         /**
          * Register component responsible for the convertion.
          */
-        app.converter.addComponent('convert-component', ConvertComponent);
+        app.converter.addComponent('convert-component', new ConvertComponent(app.converter));
     }
 
     if (startRenderer) {
         /**
          * Register component responsible for the Renderer.
          */
-        app.renderer.addComponent('render-component', RenderComponenet);
+        app.renderer.addComponent('render-component', new RenderComponenet(app.renderer));
     }
     
     /**
      * Register theme component.
      */
-    app.renderer.addComponent('theme-component', ThemeComponent);
+    app.renderer.addComponent('theme-component', new ThemeComponent(app.renderer));
     registerHardcodedTemplateStrings(processArgs);
 }
 

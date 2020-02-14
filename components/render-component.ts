@@ -137,7 +137,7 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private updateComment(reflection, dataObj) {
-        if (!reflection.comment || !dataObj[Constants.COMMENT]) {
+        if (!reflection.comment || (dataObj && !dataObj[Constants.COMMENT])) {
             return;
         }
 
@@ -150,6 +150,11 @@ export class RenderComponenet extends RendererComponent {
         if (reflection.comment.shortText) {
             parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.SHORT_TEXT], '\n');
             reflection.comment.shortText = parsed;
+        }
+
+        if (reflection.comment.returns) {
+            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.RETURNS], '\n');
+            reflection.comment.returns = parsed;
         }
 
         if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
