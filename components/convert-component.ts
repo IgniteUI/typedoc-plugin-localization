@@ -12,6 +12,8 @@ import { FunctionFactory } from '../utils/factories/function-factory';
   
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
+    projPath = "projects\\igniteui-angular\\src";
+
     /**
      * Contains current name per every Class, Interface, Enum.
      */
@@ -46,7 +48,8 @@ export class ConvertComponent extends ConverterComponent {
         });
 
         this.parser = new Parser();
-        this.fileOperations = new FileOperations(this.application.logger);
+        this.fileOperations = new FileOperations(this.application.logger, "projects\\igniteui-angular\\src");
+        console.log('convert');
     }
 
     /**

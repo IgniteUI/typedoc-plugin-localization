@@ -10,6 +10,8 @@ import { Parser } from '../utils/parser';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
+    private projPath = "projects\\igniteui-angular\\src";
+
     fileOperations: FileOperations;
     /**
      * Contains data per every processed Object like (Class, Inteface, Enum) 
@@ -33,8 +35,9 @@ export class RenderComponenet extends RendererComponent {
             [RendererEvent.BEGIN]: this.onRenderBegin,
         });
         
-        this.fileOperations = new FileOperations(this.application.logger);
+        this.fileOperations = new FileOperations(this.application.logger, "projects\\igniteui-angular\\src");
         this.parser = new Parser();
+        console.log('renderer');
     }
 
     private onRenderBegin(event) {
@@ -65,7 +68,7 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Interface:
                     const filePath = reflection.sources[0].fileName;
                     let processedDir = this.mainDirOfJsons;
-                    const parsedPath = this.fileOperations.getProcessedDir(filePath);
+                    const parsedPath = this.fileOperations.getProcessedDir(path.normalize(filePath));
                     if (parsedPath) {
                         processedDir = path.join(processedDir, parsedPath);
                     }
