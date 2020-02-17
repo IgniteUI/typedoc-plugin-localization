@@ -12,14 +12,18 @@ import { pluginOptions } from './utils/options';
 
 module.exports = (PluginHost: Application) => {
     const app = PluginHost.owner; 
-
+    console.log('index');
     /**
      * Add Options register Component.
      */
-    pluginOptions(app.options)
+    pluginOptions(app.options);
 
     let startConverter = false; 
     let startRenderer = false;
+
+    app.inputFiles.forEach(f => {
+      f = f.toLocaleLowerCase().includes(app.project) ? f.substring(app.project.length + 1, f.length) : f;
+    });
 
     const processArgs = process.argv;
     /**

@@ -12,8 +12,6 @@ import { FunctionFactory } from '../utils/factories/function-factory';
   
 @Component({ name: 'convert-component' })
 export class ConvertComponent extends ConverterComponent {
-    projPath = "projects\\igniteui-angular\\src";
-
     /**
      * Contains current name per every Class, Interface, Enum.
      */
@@ -48,7 +46,7 @@ export class ConvertComponent extends ConverterComponent {
         });
 
         this.parser = new Parser();
-        this.fileOperations = new FileOperations(this.application.logger, "projects\\igniteui-angular\\src");
+        this.fileOperations = new FileOperations(this.application.logger);
         console.log('convert');
     }
 
@@ -85,11 +83,6 @@ export class ConvertComponent extends ConverterComponent {
 
 
     private onResolveBegin(context) {
-        const files = context.project.files;
-        /**
-         * Creates the directory structure of the json's generetion.
-         */
-        this.fileOperations.prepareOutputDirectory(this.mainDirToExport, files);
         /**
          * Create main file which would contains all global functions.
          */
@@ -107,7 +100,9 @@ export class ConvertComponent extends ConverterComponent {
          */
         if (this.factoryInstance && !this.factoryInstance.isEmpty()) {
             const filePath = this.reflection.sources[0].fileName;
-            this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
+            const processedDir = this.fileOperations.getFileDir(filePath);
+            this.fileOperations.createFile(this.mainDirToExport, processedDir, this.jsonObjectName, 'json');
+            this.fileOperations.appendFileData(this.mainDirToExport, processedDir, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
         }
 
         /**
@@ -135,8 +130,10 @@ export class ConvertComponent extends ConverterComponent {
                  */
                 if (this.jsonObjectName !== reflection.name && this.jsonObjectName !== undefined) {
                     if (!this.factoryInstance.isEmpty()) {
-                        const filePath = this.reflection.sources[0].fileName
-                        this.fileOperations.appendFileData(this.mainDirToExport, filePath, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
+                        const filePath = this.reflection.sources[0].fileName;
+                        const processedDir = this.fileOperations.getFileDir(filePath);
+                        this.fileOperations.createFile(this.mainDirToExport, processedDir, this.jsonObjectName, 'json');
+                        this.fileOperations.appendFileData(this.mainDirToExport, processedDir, this.jsonObjectName, 'json', this.factoryInstance.getJsonContent());
                     }
                 }
 

@@ -3,14 +3,10 @@ import * as path from 'path';
 import { Logger } from 'typedoc/dist/lib/utils/loggers';
 
 export class FileOperations {
-
-    private projPath;
-
     public logger;
 
-    constructor(logger: Logger, projPath: string) {
+    constructor(logger: Logger) {
         this.logger = logger;
-        this.projPath = projPath;
     }
 
     public createDir(dirName: string): boolean {
@@ -90,25 +86,9 @@ export class FileOperations {
         });
     }
 
-    public getProcessedDir(filePath: string) {
-        // if (!filePath) {
-        //     return;
-        // }
-
-        filePath = filePath.toLocaleLowerCase().includes(this.projPath) ? 
-          filePath.substring(this.projPath.length + 1, filePath.length) : filePath;
-
+    public getFileDir(filePath: string) {
         const parsedPath = path.parse(filePath);
-        const splitPath = parsedPath.dir.split(path.sep);
-        const fileStructureDir = splitPath[0];
-        const componentDir = splitPath[1];
-        if (fileStructureDir === "" && componentDir === undefined || parsedPath.root) {
-            return null;
-        } else if (fileStructureDir && componentDir === undefined) {
-            return fileStructureDir;
-        }
-
-        return path.join(fileStructureDir, componentDir);
+        return parsedPath.dir;
     }
 
     public appendFileData(mainDir, filePath, fileName, extension, data) {
@@ -138,7 +118,7 @@ export class FileOperations {
     }
 
     private constructFilePath(mainDir, filePath: string) {
-        const processedPath = filePath ? this.getProcessedDir(path.normalize(filePath)) : filePath;
+        const processedPath = filePath ? path.normalize(filePath).toString() : filePath;
         let filePathBuilder = mainDir;
         if (processedPath) {
             filePathBuilder = path.join(filePathBuilder, processedPath);
