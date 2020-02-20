@@ -47,7 +47,6 @@ export class ConvertComponent extends ConverterComponent {
 
         this.parser = new Parser();
         this.fileOperations = new FileOperations(this.application.logger);
-        console.log('convert');
     }
 
     /**
@@ -90,7 +89,7 @@ export class ConvertComponent extends ConverterComponent {
         this.fileOperations.appendFileData(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json', {});
     }
 
-    private onResolveEnd(...rest) {
+    private onResolveEnd() {
         /**
          * Write the last built json file.
          * 

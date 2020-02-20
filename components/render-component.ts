@@ -39,7 +39,6 @@ export class RenderComponenet extends RendererComponent {
         
         this.fileOperations = new FileOperations(this.application.logger);
         this.parser = new Parser();
-        console.log('renderer');
     }
 
     private onRenderBegin(event) {

@@ -11,8 +11,7 @@ import { ThemeComponent } from './components/theme-component';
 import { pluginOptions } from './utils/options';
 
 module.exports = (PluginHost: Application) => {
-    const app = PluginHost.owner; 
-    console.log('index');
+    const app = PluginHost.owner;
     /**
      * Add Options register Component.
      */
