@@ -28,6 +28,10 @@ export class RenderComponenet extends RendererComponent {
      */
     parser: Parser;
 
+    public constructor(owner) {
+      super(owner)
+    }
+
     public initialize() {
         this.listenTo(this.owner, {
             [RendererEvent.BEGIN]: this.onRenderBegin,
@@ -65,7 +69,7 @@ export class RenderComponenet extends RendererComponent {
             case ReflectionKind.Interface:
                     const filePath = reflection.sources[0].fileName;
                     let processedDir = this.mainDirOfJsons;
-                    const parsedPath = this.fileOperations.getProcessedDir(filePath);
+                    const parsedPath = this.fileOperations.getFileDir(filePath);
                     if (parsedPath) {
                         processedDir = path.join(processedDir, parsedPath);
                     }

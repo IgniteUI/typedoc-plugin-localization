@@ -3,7 +3,6 @@ import * as path from 'path';
 import { Logger } from 'typedoc/dist/lib/utils/loggers';
 
 export class FileOperations {
-
     public logger;
 
     constructor(logger: Logger) {
@@ -87,22 +86,9 @@ export class FileOperations {
         });
     }
 
-    public getProcessedDir(filePath) {
-        if (!filePath) {
-            return;
-        }
-
+    public getFileDir(filePath: string) {
         const parsedPath = path.parse(filePath);
-        const splitPath = parsedPath.dir.split('/');
-        const fileStructureDir = splitPath[0];
-        const componentDir = splitPath[1];
-        if (fileStructureDir === "" && componentDir === undefined || parsedPath.root) {
-            return null;
-        } else if (fileStructureDir && componentDir === undefined) {
-            return fileStructureDir;
-        }
-
-        return path.join(fileStructureDir, componentDir);
+        return parsedPath.dir;
     }
 
     public appendFileData(mainDir, filePath, fileName, extension, data) {
@@ -131,8 +117,8 @@ export class FileOperations {
         return fs.readJsonSync(jsonFilePath);
     }
 
-    private constructFilePath(mainDir, filePath) {
-        const processedPath = this.getProcessedDir(filePath);
+    private constructFilePath(mainDir, filePath: string) {
+        const processedPath = filePath ? path.normalize(filePath).toString() : filePath;
         let filePathBuilder = mainDir;
         if (processedPath) {
             filePathBuilder = path.join(filePathBuilder, processedPath);
