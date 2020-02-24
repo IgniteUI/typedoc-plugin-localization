@@ -70,9 +70,9 @@ Folder `exports` will be automatically created
 
 > This command will create `exports` folder.
 > <br />
->`projects\igniteui-angular\src\` This directory contains the file structure of the project. It takes up to `two` levels.
+>`projects\igniteui-angular\src\` This directory contains the file structure of the project.
 > <br />
-> For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/` which   > will contains all files that are under it or files that are deeply nested.
+> For instance when you have a `/directory/inner-dir1/inner-dir2/file.ts` it will create the following structure `exports/directory/inner-dir1/inner-dir2/` which will contains all files that are under it.
 
 
 #### Step 2
