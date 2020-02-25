@@ -11,6 +11,8 @@ import { LogLevel } from 'typedoc/dist/lib/utils';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
+    private warns: boolean;
+
     fileOperations: FileOperations;
     /**
      * Contains data per every processed Object like (Class, Inteface, Enum) 
@@ -44,6 +46,7 @@ export class RenderComponenet extends RendererComponent {
         const reflections = event.project.reflections;
         const options = this.application.options.getRawValues();
         const localizeOpt = options[Constants.RENDER_OPTION];
+        this.warns = options[Constants.WARNS];
         if (localizeOpt) {
             this.mainDirOfJsons = localizeOpt;
             this.globalFuncsData = this.fileOperations.getFileData(this.mainDirOfJsons, Constants.GLOBAL_FUNCS_FILE_NAME, 'json');
@@ -165,7 +168,9 @@ export class RenderComponenet extends RendererComponent {
             tag.tagName = tagFromJson[Constants.COMMENT].tagName;
             tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
           } catch (e) {
-            this.application.logger.log(`Could not find ${tag.tagName} tag of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+            if (this.warns) {
+              this.application.logger.log(`Could not find ${tag.tagName} tag of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+            }
           }
         });
       }
@@ -176,7 +181,9 @@ export class RenderComponenet extends RendererComponent {
           try {
             param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
           } catch(e) {
-            this.application.logger.log(`Could not find ${param.name} parameter of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+            if (this.warns) {
+              this.application.logger.log(`Could not find ${param.name} parameter of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+            }
           }
         });
       }
