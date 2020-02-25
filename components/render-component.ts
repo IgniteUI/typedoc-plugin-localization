@@ -159,26 +159,26 @@ export class RenderComponenet extends RendererComponent {
       }
 
       if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
-          reflection.comment.tags.forEach(tag => {
-              const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
-              try {
-                tag.tagName = tagFromJson[Constants.COMMENT].tagName;
-                tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
-              } catch (e) {
-                this.application.logger.log(`Could not find ${tag.tagName} tag of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
-              }
-            });
+        reflection.comment.tags.forEach(tag => {
+          const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
+          try {
+            tag.tagName = tagFromJson[Constants.COMMENT].tagName;
+            tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
+          } catch (e) {
+            this.application.logger.log(`Could not find ${tag.tagName} tag of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
           }
+        });
+      }
           
-          if (reflection.parameters && dataObj[Constants.COMMENT][Constants.PARAMS]) {
-            reflection.parameters.forEach(param => {
-              const paramFromJson = dataObj[Constants.COMMENT][Constants.PARAMS][param.name];
-              try {
-                param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
-              } catch(e) {
-                this.application.logger.log(`Could not find ${param.name} parameter of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
-              }
-          });
+      if (reflection.parameters && dataObj[Constants.COMMENT][Constants.PARAMS]) {
+        reflection.parameters.forEach(param => {
+          const paramFromJson = dataObj[Constants.COMMENT][Constants.PARAMS][param.name];
+          try {
+            param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
+          } catch(e) {
+            this.application.logger.log(`Could not find ${param.name} parameter of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+          }
+        });
       }
     }
 
