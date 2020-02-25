@@ -7,6 +7,7 @@ export class Constants {
     static readonly PARAMS = 'parameters';
     static readonly RETURNS = 'returns';
     static readonly TAGS = 'tags';
+    static readonly WARNS = 'warns';
     static readonly TAG_NAME = 'tagName';
     static readonly COMMENT = 'comment';
     static readonly TEXT = 'text';
@@ -20,6 +21,7 @@ export class Constants {
     static readonly SHORT_CONVERT_OPTION = 'gen-json';
     static readonly SHORT_RENDER_OPTION = 'gen-from-json';
     static readonly INCLUDE_TAGS_OPTION = 'tags';
+    static readonly INCLUDE_WARNS_OPTION = 'warns';
     static readonly INCLUDE_PARAMS_OPTION = 'params';
     static readonly LOCALIZE_OPTION = 'localize'
     static readonly TEMPLATE_STRINGS_OPTION = 'templateStrings';
