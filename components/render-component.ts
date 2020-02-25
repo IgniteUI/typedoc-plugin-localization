@@ -7,6 +7,7 @@ import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
 import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
+import { LogLevel } from 'typedoc/dist/lib/utils';
 
 @Component({ name: 'render-component'})
 export class RenderComponenet extends RendererComponent {
@@ -27,10 +28,6 @@ export class RenderComponenet extends RendererComponent {
      * String parser
      */
     parser: Parser;
-
-    public constructor(owner) {
-      super(owner)
-    }
 
     public initialize() {
         this.listenTo(this.owner, {
@@ -141,44 +138,48 @@ export class RenderComponenet extends RendererComponent {
     }
 
     private updateComment(reflection, dataObj) {
-        if (!reflection.comment || (dataObj && !dataObj[Constants.COMMENT])) {
-            return;
-        }
+      if (!reflection.comment || (dataObj && !dataObj[Constants.COMMENT])) {
+          return;
+      }
 
-        let parsed;
-        if (reflection.comment.text) {
-            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.TEXT], '\n');
-            reflection.comment.text = parsed;
-        }
+      let parsed;
+      if (reflection.comment.text) {
+          parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.TEXT], '\n');
+          reflection.comment.text = parsed;
+      }
 
-        if (reflection.comment.shortText) {
-            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.SHORT_TEXT], '\n');
-            reflection.comment.shortText = parsed;
-        }
+      if (reflection.comment.shortText) {
+          parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.SHORT_TEXT], '\n');
+          reflection.comment.shortText = parsed;
+      }
 
-        if (reflection.comment.returns) {
-            parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.RETURNS], '\n');
-            reflection.comment.returns = parsed;
-        }
+      if (reflection.comment.returns) {
+          parsed = this.parser.joinByCharacter(dataObj[Constants.COMMENT][Constants.RETURNS], '\n');
+          reflection.comment.returns = parsed;
+      }
 
-        if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
-            reflection.comment.tags.forEach(tag => {
-                const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
-                tag.tagName = tagFromJson[Constants.COMMENT].tagName;
-                tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
-                return tag;
-            });
-        }
-
-        if (reflection.parameters && dataObj[Constants.COMMENT][Constants.PARAMS]) {
-            reflection.parameters.forEach(param => {
-                const paramFromJson = dataObj[Constants.COMMENT][Constants.PARAMS][param.name];
-                if (paramFromJson) {
-                    param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
-                    return param;
-                }
-            });
-        }
+      if (reflection.comment.tags && dataObj[Constants.COMMENT][Constants.TAGS]) {
+        reflection.comment.tags.forEach(tag => {
+          const tagFromJson = dataObj[Constants.COMMENT][Constants.TAGS][tag.tagName];
+          try {
+            tag.tagName = tagFromJson[Constants.COMMENT].tagName;
+            tag.text = this.parser.joinByCharacter(tagFromJson[Constants.COMMENT].text, '\n');
+          } catch (e) {
+            this.application.logger.log(`Could not find ${tag.tagName} tag of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+          }
+        });
+      }
+          
+      if (reflection.parameters && dataObj[Constants.COMMENT][Constants.PARAMS]) {
+        reflection.parameters.forEach(param => {
+          const paramFromJson = dataObj[Constants.COMMENT][Constants.PARAMS][param.name];
+          try {
+            param.comment.text = this.parser.joinByCharacter(paramFromJson[Constants.COMMENT].text, '\n');
+          } catch(e) {
+            this.application.logger.log(`Could not find ${param.name} parameter of ${reflection.parent.name} in ${reflection.parent.parent.name}`, LogLevel.Warn);
+          }
+        });
+      }
     }
 
     /**
