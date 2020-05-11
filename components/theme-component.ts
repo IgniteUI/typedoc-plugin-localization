@@ -20,6 +20,11 @@ export class ThemeComponent extends RendererComponent {
 
     private onRenderBegin(event) {
         this.registerHelpers();
+        
+        if (!event.project.groups) {
+            return;
+        }
+
         this.localizeGroupTitles(event.project.groups);
         this.run(event.project.reflections);
     }
