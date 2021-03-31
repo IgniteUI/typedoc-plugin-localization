@@ -22,12 +22,11 @@
     "typedocplugin"
   ],
   "dependencies": {
-    "fs-extra": "^9.1.0",
-    "typedoc": "^0.20.34"
+    "fs-extra": "^7.0.1"
   },
   "devDependencies": {
-    "@types/node": "^14.14.37",
-    "typedoc": "^0.20.34",
-    "typescript": "^4.2.3"
+    "@types/node": "^13.13.48",
+    "typedoc": "^0.16.11",
+    "typescript": "^3.9.9"
   }
 }
