@@ -2,17 +2,15 @@ import { Options } from 'typedoc/dist/lib/utils/options/options'
 import { ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
 import { Constants } from './constants';
 
-export function pluginOptions(options: Options) {
+export function pluginOptions(options: Pick<Options, "addDeclaration">) {
     
   options.addDeclaration({
       name: Constants.CONVERT_OPTION,
-      short: Constants.SHORT_CONVERT_OPTION,
-      help: 'Specifies the directory where the json files have to be generated.',
+      help: 'Specifies the directory where the json files have to be generated.'
   });
 
   options.addDeclaration({
       name: Constants.RENDER_OPTION,
-      short: Constants.SHORT_RENDER_OPTION,
       help: 'Specify from where to get the loclized json data.'
   });
 

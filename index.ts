@@ -19,24 +19,17 @@ module.exports = (PluginHost: Application) => {
 
     let startConverter = false; 
     let startRenderer = false;
-
-    app.inputFiles.forEach(f => {
-      f = f.toLocaleLowerCase().includes(app.project) ? f.substring(app.project.length + 1, f.length) : f;
-    });
-
     const processArgs = process.argv;
     /**
      * Determines it it is necessary to run Conversion or Render process based on the 
      * Command line arguments(Options).
      */
     processArgs.forEach(command => {
-        if (command.indexOf(Constants.CONVERT_OPTION) >= 0 ||
-            command.indexOf(Constants.SHORT_CONVERT_OPTION) >= 0) {
+        if (command.indexOf(Constants.CONVERT_OPTION) >= 0) {
                 startConverter = true;
         }
 
-        if (command.indexOf(Constants.RENDER_OPTION) >= 0 ||
-            command.indexOf(Constants.SHORT_RENDER_OPTION) >= 0) {
+        if (command.indexOf(Constants.RENDER_OPTION) >= 0) {
                 startRenderer = true;
         }
     });
