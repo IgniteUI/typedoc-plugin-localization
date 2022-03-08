@@ -1,4 +1,4 @@
-import { ReflectionKind } from "typedoc/dist/lib/models";
+import { ReflectionKind } from "typedoc";
 
 export enum AttributeType {
     properties = ReflectionKind.Property,

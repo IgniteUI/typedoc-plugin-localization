@@ -1,25 +1,31 @@
 import * as path from 'path';
 
-import { RendererEvent, PageEvent } from "typedoc/dist/lib/output/events";
-import { Component } from 'typedoc/dist/lib/utils';
-import { RendererComponent } from 'typedoc/dist/lib/output/components';
+import { RendererEvent, PageEvent, ReflectionKind, Application, Theme, ProjectReflection, Reflection, UrlMapping } from "typedoc";
 import { Constants } from '../utils/constants';
 import { GlobalFuncs } from '../utils/global-funcs';
 import { HardcodedStrings } from '../utils/template-strings';
-import { ReflectionKind } from 'typedoc/dist/lib/models';
-import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
+// import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
 
-@Component({ name: 'theme-component' })
-export class ThemeComponent extends RendererComponent {
+export class ThemeComponent {
+    public app: Application;
+
+    public constructor(app: Application) {
+        this.app = app
+        this.initialize();
+    }
+
     initialize() {
-        this.listenTo(this.owner, {
-            [RendererEvent.BEGIN]: this.onRenderBegin,
-            [PageEvent.BEGIN]: this.onRenderingBeginPage
-        });
+        this.app.renderer.on(
+            RendererEvent.BEGIN, this.onRenderBegin.bind(this)
+        );
+        
+        this.app.renderer.on(
+            PageEvent.BEGIN, this.onRenderingBeginPage.bind(this)
+        );
     }
 
     private onRenderBegin(event) {
-        this.registerHelpers();
+        // this.registerHelpers();
         
         if (!event.project.groups) {
             return;
@@ -30,8 +36,9 @@ export class ThemeComponent extends RendererComponent {
     }
 
     private onRenderingBeginPage(event: PageEvent) {
-      const navigationItems: Array<NavigationItem> = event.navigation.children;
-      navigationItems.forEach((item: NavigationItem) => {
+      const navigationItems: Array<any> = new Array(); 
+    //   event.navigation.children;
+      navigationItems.forEach((item: any) => {
           item.title = this.getLocaleValue(item.title);
       });
     }
@@ -109,19 +116,19 @@ export class ThemeComponent extends RendererComponent {
      * for hardcoded template strings localization.
      */
     private registerHelpers() {
-        let module;
-        try {
-            module = require.resolve(Constants.PROJ_NAME);
-        } catch(e) {
-            this.application.logger.error(e.message);
-            return;
-        }
+        // let module;
+        // try {
+        //     module = require.resolve(Constants.PROJ_NAME);
+        // } catch(e) {
+        //     this.app.logger.error(e.message);
+        //     return;
+        // }
 
-        const pluginDist = path.dirname(require.resolve(module));
-        if (pluginDist) {
-            this.owner.theme.resources.deactivate();
-            this.owner.theme.resources.helpers.addOrigin('custom-helpers', path.join(pluginDist, 'utils', 'helpers'));
-            this.owner.theme.resources.activate();
-        }
+        // const pluginDist = path.dirname(require.resolve(module));
+        // if (pluginDist) {
+            // this.app.renderer.theme.resources.deactivate();
+            // this.owner.theme.resources.helpers.addOrigin('custom-helpers', path.join(pluginDist, 'utils', 'helpers'));
+            // this.owner.theme.resources.activate();
+        // }
     }
 }

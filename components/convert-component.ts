@@ -1,6 +1,8 @@
-import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
-import { Converter } from 'typedoc/dist/lib/converter';
-import { ReflectionKind } from 'typedoc/dist/lib/models';
+import { 
+    Application,
+    Converter,
+    ReflectionKind,
+} from 'typedoc';
 import { FileOperations } from '../utils/file-operations';
 import { ClassFactory } from '../utils/factories/class-factory';
 import { BaseFactory } from '../utils/factories/base-factory';
@@ -9,41 +11,45 @@ import { Parser } from '../utils/parser';
 import { Constants } from '../utils/constants';
 import { InterfaceFactory } from '../utils/factories/interface-factory';
 import { FunctionFactory } from '../utils/factories/function-factory';
-  
-@Component({ name: 'convert-component' })
-export class ConvertComponent extends ConverterComponent {
+
+export class ConvertComponent {
     /**
      * Contains current name per every Class, Interface, Enum.
      */
-    jsonObjectName: string;
+    public jsonObjectName: string;
     /**
      * Contains current Object instance.
      */
-    factoryInstance: BaseFactory;
-    fileOperations: FileOperations;
+    public factoryInstance: BaseFactory;
+    public fileOperations: FileOperations;
     /**
      * Current @Reflection instance.
      */
-    reflection;
-    parser: Parser;
+    public reflection;
+    public parser: Parser;
     /**
      * Main process dir
      */
-    mainDirToExport: string;
+    public mainDirToExport: string;
     /**
      * Global functions data.
      */
-    globalFuncsJson = {};
+    public globalFuncsJson = {};
+
+    public application: Application
+
+    public constructor(application: Application) {
+        this.application = application;
+        this.initialize();
+    }
 
     public initialize() {
 
-        this.listenTo(this.owner, {
-            [Converter.EVENT_RESOLVE]: this.resolve,
-            [Converter.EVENT_RESOLVE_BEGIN]: this.onResolveBegin,
-            [Converter.EVENT_RESOLVE_END]: this.onResolveEnd,
-            [Converter.EVENT_END]: this.onEnd,
-            [Converter.EVENT_BEGIN]: this.onBegin
-        });
+        this.application.converter.on(Converter.EVENT_RESOLVE, this.resolve.bind(this));
+        this.application.converter.on(Converter.EVENT_RESOLVE_BEGIN, this.onResolveBegin.bind(this));
+        this.application.converter.on(Converter.EVENT_RESOLVE_END, this.onResolveEnd.bind(this));
+        this.application.converter.on(Converter.EVENT_END, this.onEnd.bind(this));
+        this.application.converter.on(Converter.EVENT_BEGIN, this.onBegin.bind(this));
 
         this.parser = new Parser();
         this.fileOperations = new FileOperations(this.application.logger);

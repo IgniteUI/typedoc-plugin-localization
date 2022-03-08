@@ -1,5 +1,4 @@
-import { Options } from 'typedoc/dist/lib/utils/options/options'
-import { ParameterType } from 'typedoc/dist/lib/utils/options/declaration';
+import { Options, ParameterType } from 'typedoc'
 import { Constants } from './constants';
 
 export function pluginOptions(options: Pick<Options, "addDeclaration">) {

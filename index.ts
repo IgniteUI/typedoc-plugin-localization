@@ -1,7 +1,7 @@
 import * as process from 'process';
 import * as fs from 'fs-extra';
 
-import { Application } from 'typedoc/dist/lib/application'
+import { Application } from 'typedoc'
 import { ConvertComponent } from './components/convert-component';
 import { RenderComponenet } from './components/render-component';
 import { Constants } from './utils/constants';
@@ -10,7 +10,7 @@ import { HardcodedStrings } from './utils/template-strings';
 import { ThemeComponent } from './components/theme-component';
 import { pluginOptions } from './utils/options';
 
-module.exports = (PluginHost: Application) => {
+export function load(PluginHost: Application) {
     const app = PluginHost.owner;
     /**
      * Add Options register Component.
@@ -44,20 +44,22 @@ module.exports = (PluginHost: Application) => {
         /**
          * Register component responsible for the convertion.
          */
-        app.converter.addComponent('convert-component', new ConvertComponent(app.converter));
+        new ConvertComponent(app);
+        // app.converter.('test', ConvertComponent(app));
     }
 
     if (startRenderer) {
         /**
          * Register component responsible for the Renderer.
          */
-        app.renderer.addComponent('render-component', new RenderComponenet(app.renderer));
+        new RenderComponenet(app)
     }
     
     /**
      * Register theme component.
      */
-    app.renderer.addComponent('theme-component', new ThemeComponent(app.renderer));
+    new ThemeComponent(app);
+    // app.renderer.addComponent('theme-component', new ThemeComponent(app.renderer));
     registerHardcodedTemplateStrings(processArgs);
 }
 
