@@ -1,10 +1,6 @@
-import * as path from 'path';
-
-import { RendererEvent, PageEvent, ReflectionKind, Application, Theme, ProjectReflection, Reflection, UrlMapping } from "typedoc";
-import { Constants } from '../utils/constants';
+import { RendererEvent, ReflectionKind, Application } from "typedoc";
 import { GlobalFuncs } from '../utils/global-funcs';
 import { HardcodedStrings } from '../utils/template-strings';
-// import { NavigationItem } from 'typedoc/dist/lib/output/models/NavigationItem';
 
 export class ThemeComponent {
     public app: Application;
@@ -18,29 +14,15 @@ export class ThemeComponent {
         this.app.renderer.on(
             RendererEvent.BEGIN, this.onRenderBegin.bind(this)
         );
-        
-        this.app.renderer.on(
-            PageEvent.BEGIN, this.onRenderingBeginPage.bind(this)
-        );
     }
 
     private onRenderBegin(event) {
-        // this.registerHelpers();
-        
         if (!event.project.groups) {
             return;
         }
 
         this.localizeGroupTitles(event.project.groups);
         this.run(event.project.reflections);
-    }
-
-    private onRenderingBeginPage(event: PageEvent) {
-      const navigationItems: Array<any> = new Array(); 
-    //   event.navigation.children;
-      navigationItems.forEach((item: any) => {
-          item.title = this.getLocaleValue(item.title);
-      });
     }
     
     private run(reflections) {
@@ -109,26 +91,5 @@ export class ThemeComponent {
             HardcodedStrings.getTemplateStrings(), 
             HardcodedStrings.getLocal(), 
             value);
-    }
-
-    /**
-     * Register helper function responsible
-     * for hardcoded template strings localization.
-     */
-    private registerHelpers() {
-        // let module;
-        // try {
-        //     module = require.resolve(Constants.PROJ_NAME);
-        // } catch(e) {
-        //     this.app.logger.error(e.message);
-        //     return;
-        // }
-
-        // const pluginDist = path.dirname(require.resolve(module));
-        // if (pluginDist) {
-            // this.app.renderer.theme.resources.deactivate();
-            // this.owner.theme.resources.helpers.addOrigin('custom-helpers', path.join(pluginDist, 'utils', 'helpers'));
-            // this.owner.theme.resources.activate();
-        // }
     }
 }
