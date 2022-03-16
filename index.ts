@@ -10,6 +10,8 @@ import { HardcodedStrings } from './utils/template-strings';
 import { ThemeComponent } from './components/theme-component';
 import { pluginOptions } from './utils/options';
 
+export * from './utils/helpers/localize';
+
 export function load(PluginHost: Application) {
     const app = PluginHost.owner;
     /**
