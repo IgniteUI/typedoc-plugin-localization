@@ -1,16 +1,12 @@
 import * as path from 'path';
 
-import { Component, RendererComponent } from 'typedoc/dist/lib/output/components';
-import { ReflectionKind } from 'typedoc/dist/lib/models';
+import { ReflectionKind, RendererEvent, LogLevel, Application } from 'typedoc';
 import { FileOperations } from '../utils/file-operations';
 import { AttributeType } from '../utils/enums/json-keys';
 import { Constants } from '../utils/constants';
-import { RendererEvent } from 'typedoc/dist/lib/output/events';
 import { Parser } from '../utils/parser';
-import { LogLevel } from 'typedoc/dist/lib/utils';
 
-@Component({ name: 'render-component'})
-export class RenderComponenet extends RendererComponent {
+export class RenderComponenet {
     private warns: boolean;
 
     fileOperations: FileOperations;
@@ -31,10 +27,15 @@ export class RenderComponenet extends RendererComponent {
      */
     parser: Parser;
 
+    public application
+
+    public constructor(application: Application) {
+        this.application = application;
+        this.initialize();
+    }
+
     public initialize() {
-        this.listenTo(this.owner, {
-            [RendererEvent.BEGIN]: this.onRenderBegin,
-        });
+        this.application.renderer.on(RendererEvent.BEGIN,this.onRenderBegin.bind(this));
         
         this.fileOperations = new FileOperations(this.application.logger);
         this.parser = new Parser();

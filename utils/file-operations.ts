@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Logger } from 'typedoc/dist/lib/utils/loggers';
+import { Logger } from 'typedoc';
 
 export class FileOperations {
     public logger;

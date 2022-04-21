@@ -5,8 +5,7 @@ import { HardcodedStrings } from '../template-strings';
  * Helper function which loclize the hardcoded template strings.
  * @param options 
  */
-export function localize(options: any) {
-    const value = options.fn(this).trim();    
+export function localize(value: string) {
     return GlobalFuncs.getKeyValuePairVal(
         HardcodedStrings.getTemplateStrings(), 
         HardcodedStrings.getLocal(), 
