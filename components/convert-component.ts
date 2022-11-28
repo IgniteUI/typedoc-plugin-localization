@@ -1,4 +1,4 @@
-import { 
+import {
     Application,
     Converter,
     ReflectionKind,
@@ -68,7 +68,7 @@ export class ConvertComponent {
          */
         this.mainDirToExport = options[Constants.CONVERT_OPTION];
 
-        if(!this.fileOperations.ifDirectoryExists(this.mainDirToExport)) {
+        if (!this.fileOperations.ifDirectoryExists(this.mainDirToExport)) {
             this.fileOperations.createDir(this.mainDirToExport);
         }
     }
@@ -112,7 +112,7 @@ export class ConvertComponent {
 
         /**
          * Write all collected data for all global functions into corresponding file. 
-         */ 
+         */
         const funcObjKeys = Object.keys(this.globalFuncsJson);
         if (funcObjKeys.length) {
             this.fileOperations.appendFileData(this.mainDirToExport, null, Constants.GLOBAL_FUNCS_FILE_NAME, 'json', this.globalFuncsJson);
@@ -125,7 +125,7 @@ export class ConvertComponent {
      * @param reflection 
      */
     private resolve(context, reflection) {
-        switch(reflection.kind) {
+        switch (reflection.kind) {
             case ReflectionKind.Enum:
             case ReflectionKind.Class:
             case ReflectionKind.Interface:
@@ -163,12 +163,12 @@ export class ConvertComponent {
                 this.factoryInstance.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
                 break;
             case ReflectionKind.Function:
-                    const funcData = this.getCommentInfo(reflection.signatures[0]);
-                    const funcInstance = this.instanceBuilder(reflection.kind, reflection.name);
-                    funcInstance.buildObjectStructure(funcData);
-                    if (!funcInstance.isEmpty()) {
-                        this.globalFuncsJson = Object.assign(funcInstance.getJsonContent(), this.globalFuncsJson);
-                    }
+                const funcData = this.getCommentInfo(reflection.signatures[0]);
+                const funcInstance = this.instanceBuilder(reflection.kind, reflection.name);
+                funcInstance.buildObjectStructure(funcData);
+                if (!funcInstance.isEmpty()) {
+                    this.globalFuncsJson = Object.assign(funcInstance.getJsonContent(), this.globalFuncsJson);
+                }
                 break;
             case ReflectionKind.GetSignature:
             case ReflectionKind.SetSignature:
@@ -194,7 +194,7 @@ export class ConvertComponent {
         let comment = this.getCommentData(reflection.comment);
 
         if (options[Constants.INCLUDE_TAGS_OPTION] && reflection.comment.tags) {
-            comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);            
+            comment[Constants.COMMENT] = Object.assign(this.getTagsComments(reflection.comment), comment[Constants.COMMENT]);
         }
 
         if (options[Constants.INCLUDE_PARAMS_OPTION] && reflection.parameters) {
@@ -265,24 +265,8 @@ export class ConvertComponent {
         const comment = {};
         comment[Constants.COMMENT] = {};
 
-
-        let splittedObj;
-        if(obj.text && obj.text.trim().length) {
-            splittedObj = this.parser.splitByCharacter(obj.text, '\n');
-            comment[Constants.COMMENT][Constants.TEXT] = splittedObj;
-        }
-
-        if(obj.shortText && obj.shortText.trim().length) {
-            splittedObj = this.parser.splitByCharacter(obj.shortText, '\n');
-            comment[Constants.COMMENT][Constants.SHORT_TEXT] = splittedObj;
-        }
-
-        if(obj.tagName) {
-            comment[Constants.COMMENT][Constants.TAG_NAME] = obj.tagName;
-        }
-
-        if(obj.returns) {
-            comment[Constants.COMMENT][Constants.RETURNS] = obj.returns;
+        if (obj.summary) {
+            comment[Constants.COMMENT] = obj;
         }
 
         return comment;
@@ -294,7 +278,7 @@ export class ConvertComponent {
      * @param objectName 
      */
     private instanceBuilder(objectType, objectName): BaseFactory {
-        switch(objectType) {
+        switch (objectType) {
             case ReflectionKind.Enum:
                 return new EnumFactory(objectName);
             case ReflectionKind.Interface:
