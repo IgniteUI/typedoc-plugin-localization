@@ -12,6 +12,8 @@ export class Constants {
     static readonly COMMENT = 'comment';
     static readonly TEXT = 'text';
     static readonly SHORT_TEXT = 'shortText';
+    static readonly SUMMARY = 'summary';
+    static readonly BLOCK_TAGS = 'blockTags';
 
     /**
      * Options
