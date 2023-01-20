@@ -251,3 +251,68 @@ Here we would like to translate "Defined in" hardcoded string. </br>
     npx typedoc projects\igniteui-angular\src\ --localize jp --templateStrings ./extras/template/strings/shell-strings.json
     ```
     You can see how our template strings file looks like here [./extras/template/strings/shell-strings.json](https://github.com/IgniteUI/igniteui-angular/blob/master/extras/template/strings/shell-strings.json).
+
+#### Link and Debug
+In order to run the plugin locally, after it is build, it should be linked to the repo you want to use it.
+
+1. Execute the following commands
+
+```
+npm run build
+```
+
+```
+npm pack
+```
+
+```
+cp typedoc-plugin-localization-1.0.4.tgz ~
+```
+
+2. Go to the theme repository where the plugin is included as peer dependency and add the reference to the packed file.
+Example:
+
+```
+  "peerDependecies": {
+    "typedoc-plugin-localization": "file:../../../typedoc-plugin-localization-1.0.4.tgz",
+  }
+```
+
+3. Go to the repository which is using the theme and plugin.
+
+```
+npm install ~/typedoc-plugin-localization-1.0.4.tgz
+```
+
+4. Add launch.json configuration to enable debbuging
+
+Example:
+```
+{
+    "configurations": [
+        {
+            "name": "Typedoc plugin",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/typedoc/bin/typedoc",
+            "args": [
+                "${workspaceFolder}/projects/igniteui-angular/src/public_api.ts",
+                "--generate-json",
+                "${workspaceFolder}/dist",
+                "--localize",
+                "en",
+                "--versioning",
+                "--product",
+                "ignite-ui-angular",
+                "--tsconfig",
+                "${workspaceFolder}/tsconfig.json"
+            ],
+            "sourceMaps": true,
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
+        }
+    ]
+}
+```
