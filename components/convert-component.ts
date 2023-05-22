@@ -160,7 +160,9 @@ export class ConvertComponent {
                 }
 
                 const getData = this.getCommentInfo(reflection);
-                this.factoryInstance.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
+                if (getData) {
+                    this.factoryInstance.appendAttribute(this.jsonObjectName, reflection.kind, reflection.name, getData);
+                }
                 break;
             case ReflectionKind.Function:
                 const funcData = this.getCommentInfo(reflection.signatures[0]);
