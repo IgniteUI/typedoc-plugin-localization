@@ -1,11 +1,10 @@
 import * as process from 'process';
 import * as fs from 'fs-extra';
 
-import { Application } from 'typedoc'
+import { Application, Converter, Renderer } from 'typedoc'
 import { ConvertComponent } from './components/convert-component';
 import { RenderComponenet } from './components/render-component';
 import { Constants } from './utils/constants';
-import { GlobalFuncs } from './utils/global-funcs';
 import { HardcodedStrings } from './utils/template-strings';
 import { ThemeComponent } from './components/theme-component';
 import { pluginOptions } from './utils/options';
@@ -22,6 +21,7 @@ export function load(PluginHost: Application) {
     let startConverter = false; 
     let startRenderer = false;
     const processArgs = process.argv;
+
     /**
      * Determines it it is necessary to run Conversion or Render process based on the 
      * Command line arguments(Options).
@@ -61,23 +61,24 @@ export function load(PluginHost: Application) {
      * Register theme component.
      */
     new ThemeComponent(app);
-    // app.renderer.addComponent('theme-component', new ThemeComponent(app.renderer));
-    registerHardcodedTemplateStrings(processArgs);
-}
 
-/**
- * Build the Cache containing all localized template strings.
- */
-function registerHardcodedTemplateStrings(options) {
-    const shellStringsFilePath = GlobalFuncs.getCmdLineArgumentValue(options, Constants.TEMPLATE_STRINGS_OPTION);
-    const local = GlobalFuncs.getCmdLineArgumentValue(options, Constants.LOCALIZE_OPTION);
+    /**
+     * Build the Cache containing all localized template strings.
+     */
+    const registerTemplateStrings = () => {
+        const shellStringsFilePath = app.options.getValue(Constants.TEMPLATE_STRINGS_OPTION);
+        const locale = app.options.getValue(Constants.LOCALIZE_OPTION) as string;
 
-    if (!shellStringsFilePath || !local) {
-        return;
+        if (!shellStringsFilePath || !locale) {
+            return;
+        }
+
+        const templateStrings = fs.readJsonSync(shellStringsFilePath);
+        
+        HardcodedStrings.setLocal(locale);
+        HardcodedStrings.setTemplateStrings(templateStrings);
     }
 
-    const templateStrings = fs.readJsonSync(shellStringsFilePath);
-    
-    HardcodedStrings.setLocal(local);
-    HardcodedStrings.setTemplateStrings(templateStrings);
+    app.converter.on(Converter.EVENT_RESOLVE, registerTemplateStrings);
+    app.renderer.on(Renderer.EVENT_BEGIN, registerTemplateStrings);
 }
