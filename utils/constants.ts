@@ -27,6 +27,7 @@ export class Constants {
     static readonly TEMPLATE_STRINGS_OPTION = 'templateStrings';
     static readonly INCLUDE_VERSIONS_OPTION = 'versioning';
     static readonly PRODUCT_OPTION = 'product';
+    static readonly CONFIG_OPTION = 'config';
 
     static readonly GLOBAL_FUNCS_FILE_NAME = 'globalFunctions';
 }
