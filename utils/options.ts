@@ -55,4 +55,9 @@ export function pluginOptions(options: Pick<Options, "addDeclaration">) {
         name: Constants.PRODUCT_OPTION,
         help: 'Specify product name.'
     });
+
+        options.addDeclaration({
+        name: Constants.CONFIG_OPTION,
+        help: 'Specify config json file name to use for url configurations.'
+    });
 }
