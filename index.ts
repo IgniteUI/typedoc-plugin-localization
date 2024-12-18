@@ -1,15 +1,14 @@
-import * as process from 'process';
-import * as fs from 'fs-extra';
-
+import process from 'process';
+import fs from 'fs-extra';
 import { Application, Converter, Renderer } from 'typedoc'
-import { ConvertComponent } from './components/convert-component';
-import { RenderComponenet } from './components/render-component';
-import { Constants } from './utils/constants';
-import { HardcodedStrings } from './utils/template-strings';
-import { ThemeComponent } from './components/theme-component';
-import { pluginOptions } from './utils/options';
+import { ConvertComponent } from './components/convert-component.js';
+import { RenderComponenet } from './components/render-component.js';
+import { Constants } from './utils/constants.js';
+import { HardcodedStrings } from './utils/template-strings.js';
+import { ThemeComponent } from './components/theme-component.js';
+import { pluginOptions } from './utils/options.js';
 
-export * from './utils/helpers/localize';
+export * from './utils/helpers/localize.js';
 
 export function load(PluginHost: Application) {
     const app = PluginHost.owner;

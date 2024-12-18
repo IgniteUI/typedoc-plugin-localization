@@ -1,5 +1,5 @@
-import { BaseFactory } from './base-factory';
-import { AttributeType } from '../enums/json-keys';
+import { BaseFactory } from './base-factory.js';
+import { AttributeType } from '../enums/json-keys.js';
 
 const PROPERTIES_KEY = AttributeType[AttributeType.properties];
 const METHODS_KEY = AttributeType[AttributeType.methods];

@@ -1,10 +1,9 @@
-import * as path from 'path';
-
+import path from 'path';
 import { ReflectionKind, RendererEvent, LogLevel, Application } from 'typedoc';
-import { FileOperations } from '../utils/file-operations';
-import { AttributeType } from '../utils/enums/json-keys';
-import { Constants } from '../utils/constants';
-import { Parser } from '../utils/parser';
+import { FileOperations } from '../utils/file-operations.js';
+import { AttributeType } from '../utils/enums/json-keys.js';
+import { Constants } from '../utils/constants.js';
+import { Parser } from '../utils/parser.js';
 
 export class RenderComponenet {
     private warns: boolean;

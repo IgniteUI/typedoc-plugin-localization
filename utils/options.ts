@@ -1,5 +1,5 @@
 import { Options, ParameterType } from 'typedoc'
-import { Constants } from './constants';
+import { Constants } from './constants.js';
 
 export function pluginOptions(options: Pick<Options, "addDeclaration">) {
 

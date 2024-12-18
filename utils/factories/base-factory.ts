@@ -1,4 +1,4 @@
-import { AttributeType } from "../enums/json-keys";
+import { AttributeType } from "../enums/json-keys.js";
 
 export abstract class BaseFactory {
     public name;
