@@ -1,6 +1,6 @@
 import { RendererEvent, ReflectionKind, Application } from "typedoc";
-import { GlobalFuncs } from '../utils/global-funcs';
-import { HardcodedStrings } from '../utils/template-strings';
+import { GlobalFuncs } from '../utils/global-funcs.js';
+import { HardcodedStrings } from '../utils/template-strings.js';
 
 export class ThemeComponent {
     public app: Application;

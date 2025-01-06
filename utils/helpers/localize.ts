@@ -1,5 +1,5 @@
-import { GlobalFuncs } from '../global-funcs';
-import { HardcodedStrings } from '../template-strings';
+import { GlobalFuncs } from '../global-funcs.js';
+import { HardcodedStrings } from '../template-strings.js';
 
 /**
  * Helper function which loclize the hardcoded template strings.

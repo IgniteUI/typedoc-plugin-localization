@@ -3,14 +3,14 @@ import {
     Converter,
     ReflectionKind,
 } from 'typedoc';
-import { FileOperations } from '../utils/file-operations';
-import { ClassFactory } from '../utils/factories/class-factory';
-import { BaseFactory } from '../utils/factories/base-factory';
-import { EnumFactory } from '../utils/factories/enum-factory';
-import { Parser } from '../utils/parser';
-import { Constants } from '../utils/constants';
-import { InterfaceFactory } from '../utils/factories/interface-factory';
-import { FunctionFactory } from '../utils/factories/function-factory';
+import { FileOperations } from '../utils/file-operations.js';
+import { ClassFactory } from '../utils/factories/class-factory.js';
+import { BaseFactory } from '../utils/factories/base-factory.js';
+import { EnumFactory } from '../utils/factories/enum-factory.js';
+import { Parser } from '../utils/parser.js';
+import { Constants } from '../utils/constants.js';
+import { InterfaceFactory } from '../utils/factories/interface-factory.js';
+import { FunctionFactory } from '../utils/factories/function-factory.js';
 
 export class ConvertComponent {
     /**

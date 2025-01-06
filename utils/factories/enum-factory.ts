@@ -1,5 +1,5 @@
-import { AttributeType } from "../enums/json-keys";
-import { BaseFactory } from "./base-factory";
+import { AttributeType } from "../enums/json-keys.js";
+import { BaseFactory } from "./base-factory.js";
 
 const ENUM_MEMBER_KEY = AttributeType[AttributeType.members];
 
